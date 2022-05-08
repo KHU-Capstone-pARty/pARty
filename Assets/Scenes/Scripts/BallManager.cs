@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 
 [RequireComponent(typeof(Rigidbody))]
-public class BallManager : MonoBehaviour
+public class BallControl : MonoBehaviour
 {
 	// This is the force of the throw
 	public float m_ThrowForce = 100f;
@@ -78,8 +78,8 @@ public class BallManager : MonoBehaviour
 			directionChosen = false;
 		}
 
-		// 4 seconds after throwing the ball, we reset it's position
-		if(Time.time - endTime >= 4 && Time.time - endTime <= 5)
+		// 5 seconds after throwing the ball, we reset it's position
+		if(Time.time - endTime >= 5 && Time.time - endTime <= 6)
 			ResetBall();
 
 	}
