@@ -39,6 +39,9 @@ public class DepthImageVisualizer : MonoBehaviour
     [Tooltip("The UI RawImage used to display the image on screen.")]
     private RawImage _rawImage;
 
+    [SerializeField]
+    private Text info;
+
     // Update is called once per frame
     void Update()
     {
@@ -46,14 +49,28 @@ public class DepthImageVisualizer : MonoBehaviour
         {
             using (image)
             {
+                
                 // Use the texture.
-                UpdateRawImage(_rawImage, image);
+                Texture2D texture = UpdateRawImage(_rawImage, image);
+                float tw = texture.width; float th = texture.height;
+                float sw = Screen.width; float sh = Screen.height;
+                for (int i = 10; i < tw; i += 10)
+                {
+                    for (int j = 10; j < th; j += 10)
+                    {
+                        if (texture.GetPixel(i-10, j).r- texture.GetPixel(i, j).r>1
+                            || texture.GetPixel(i, j - 10).r - texture.GetPixel(i, j).r > 1)
+                        {
+                            info.text = ("(" + i * (sw / tw) + ", " + j * (sh / th) + "," + ")");
+                        }
+                    }
+                }
             }
         }
     }
 
     // Source: https://github.com/Unity-Technologies/arfoundation-samples/blob/6296272a416925b56ce85470e0c7bef5c913ec0c/Assets/Scripts/CpuImageSample.cs
-    private static void UpdateRawImage(RawImage rawImage, XRCpuImage cpuImage)
+    private static Texture2D UpdateRawImage(RawImage rawImage, XRCpuImage cpuImage)
     {
         // Get the texture associated with the UI.RawImage that we wish to display on screen.
         var texture = rawImage.texture as Texture2D;
@@ -83,6 +100,7 @@ public class DepthImageVisualizer : MonoBehaviour
         // Perform the conversion.
         cpuImage.Convert(conversionParams, rawTextureData);
 
+        /*
         // Get the aspect ratio for the current texture.
         var textureAspectRatio = (float)texture.width / texture.height;
 
@@ -93,8 +111,11 @@ public class DepthImageVisualizer : MonoBehaviour
         var rectSize = new Vector2(maxDimension, minDimension);
         //var rectSize = new Vector2(minDimension, maxDimension);   //Portrait
         rawImage.rectTransform.sizeDelta = rectSize;
+        */
 
         // "Apply" the new pixel data to the Texture2D.
         texture.Apply();
+
+        return texture;
     }
 }

@@ -24,11 +24,12 @@ public class PlaceOnTouchPlane : MonoBehaviour
             var t = Input.GetTouch(0);
             if (t.phase==TouchPhase.Began)
             {
+                //info.text = ("(" + t.position.x + ", " + t.position.y + "," + ")");
                 if (raycastManager.Raycast(t.position, hitsList, TrackableType.PlaneWithinPolygon))
                 {
                     var h = hitsList[0].pose;
                     Instantiate(spawnObj, h.position, h.rotation);
-                    info.text = ("(" + h.position.x + ", " + h.position.y + "," + h.position.z + ")");
+                    //info.text = ("(" + h.position.x + ", " + h.position.y + "," + h.position.z + ")");
                 }
             }
         }
