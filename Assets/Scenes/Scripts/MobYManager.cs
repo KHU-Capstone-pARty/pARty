@@ -4,21 +4,21 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR.ARSubsystems;
 
-public class MobXManager : MonoBehaviour
+public class MobYManager : MonoBehaviour
 {
-    public GameObject MobXfab;
-    GameObject MobX;
+    public GameObject MobYfab;
+    GameObject MobY;
     Vector3 ARCamPos;
     public GameObject arCamera;
     float runTime;
     float duration;
     public GameObject SpawnController;
-    public bool MobXExist;
+    public bool MobYExist;
 
     // Start is called before the first frame update
     void Start()
     {
-        MobXExist = false;
+        MobYExist = false;
     }
 
     // Update is called once per frame
@@ -26,29 +26,29 @@ public class MobXManager : MonoBehaviour
     {
         ARCamPos = arCamera.transform.position;
 
-        if(MobX == null) // MobX terminated
+        if(MobY == null) // MobY terminated
         {
-            MobXExist = false;
+            MobYExist = false;
         }
-        if(MobXExist) 
+        if(MobYExist) 
         {
             runTime += Time.deltaTime;
             if(runTime < duration)
             {
-                MobX.transform.position = Vector3.Lerp(getTmpPos() , ARCamPos, runTime / duration);
+                MobY.transform.position = Vector3.Lerp(getTmpPos() , ARCamPos, runTime / duration);
             }
         }
     }
 
-    // spawn MobX
-    public void SpawnMobX()
+    // spawn MobY
+    public void SpawnMobY()
     {
         runTime = 0.0f;
         duration = 10.0f;
 
-        MobX = Instantiate(MobXfab, getTmpPos() , Quaternion.Euler(new Vector3(0,180,0)));
+        MobY = Instantiate(MobYfab, getTmpPos() , Quaternion.Euler(new Vector3(0,180,0)));
         SpawnController.GetComponent<SpawnManager>().FieldMobCnt++;
-        MobXExist = true;
+        MobYExist = true;
     }
 
     // temporary position getter
