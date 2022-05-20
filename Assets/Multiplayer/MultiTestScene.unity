@@ -201,7 +201,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 39165758}
   m_OnClick:
     m_PersistentCalls:
@@ -268,6 +268,8 @@ GameObject:
   - component: {fileID: 155461125}
   - component: {fileID: 155461127}
   - component: {fileID: 155461128}
+  - component: {fileID: 155461129}
+  - component: {fileID: 155461130}
   m_Layer: 0
   m_Name: AR Session Origin
   m_TagString: Untagged
@@ -329,6 +331,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DestroyOnRemoval: 1
+--- !u!114 &155461129
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 155461124}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa17d122634046b4a8e23048891fafc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_RaycastPrefab: {fileID: 0}
+--- !u!114 &155461130
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 155461124}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1760703bbd54c04488a8d10600262ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PlanePrefab: {fileID: 9201033577946370124, guid: a0fb25ff8ab32734b9561d7aec6af791, type: 3}
+  m_DetectionMode: 1
 --- !u!1 &337221839
 GameObject:
   m_ObjectHideFlags: 0
@@ -561,6 +590,7 @@ GameObject:
   m_Component:
   - component: {fileID: 572959654}
   - component: {fileID: 572959653}
+  - component: {fileID: 572959655}
   m_Layer: 0
   m_Name: CloudAnchorManager
   m_TagString: Untagged
@@ -583,6 +613,8 @@ MonoBehaviour:
   anchorMgr: {fileID: 155461127}
   arCam: {fileID: 1513273838}
   anchorToHost: {fileID: 0}
+  raycastManager: {fileID: 155461129}
+  anchorPrefab: {fileID: 1088698322870422, guid: 24e0d8225ada9c84d8890989c0b547af, type: 3}
   hostPhase: 0
   resolvePhase: 0
   text_log: {fileID: 1738162679}
@@ -601,6 +633,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &572959655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 572959652}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 3164798735
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &645568336
 GameObject:
   m_ObjectHideFlags: 0
@@ -1869,7 +1917,7 @@ GameObject:
   - component: {fileID: 1513273839}
   m_Layer: 0
   m_Name: AR Camera
-  m_TagString: Untagged
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2574,13 +2622,8 @@ MonoBehaviour:
   NetworkConfig:
     ProtocolVersion: 0
     NetworkTransport: {fileID: 2046180543}
-    PlayerPrefab: {fileID: 3523119031743294293, guid: 8a7322824c6fb8c47a13c63acc320fc9, type: 3}
-    NetworkPrefabs:
-    - Override: 0
-      Prefab: {fileID: 3523119031743294293, guid: 8a7322824c6fb8c47a13c63acc320fc9, type: 3}
-      SourcePrefabToOverride: {fileID: 0}
-      SourceHashToOverride: 0
-      OverridingTargetPrefab: {fileID: 0}
+    PlayerPrefab: {fileID: 0}
+    NetworkPrefabs: []
     TickRate: 30
     ClientConnectionBufferTimeout: 10
     ConnectionApproval: 0

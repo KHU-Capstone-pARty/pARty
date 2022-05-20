@@ -247,7 +247,7 @@ PlayerSettings:
   AndroidTargetDevices: 0
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: "C:/Users/PC/Naver MYBOX/KHU/4\uD559\uB1441\uD559\uAE30/\uCEA1\uC2A4\uD1A4\uB514\uC790\uC7781/Key/user.keystore"
+  AndroidKeystoreName: '{dedicated}: Desktop/user.keystore'
   AndroidKeyaliasName: ardefense
   AndroidBuildApkPerCpuArchitecture: 0
   AndroidTVCompatibility: 0

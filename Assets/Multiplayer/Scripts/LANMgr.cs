@@ -64,6 +64,7 @@ public class LANMgr : MonoBehaviour
         }
     }
 
+
     private void Update()
     {
         DeactivateStartButtons();
@@ -91,7 +92,8 @@ public class LANMgr : MonoBehaviour
                 status += "ConnectedClients: \n";
                 foreach (ulong uid in NetworkManager.Singleton.ConnectedClientsIds)
                 {
-                    status += $"{uid.ToString()}: {NetworkManager.Singleton.SpawnManager.GetPlayerNetworkObject(uid).transform.position}\n";
+                    //status += $"{uid.ToString()}: {NetworkManager.Singleton.SpawnManager.GetPlayerNetworkObject(uid).transform.position}\n";
+                    status += $"uid: {uid.ToString()}\n";
                 }
             }
             else

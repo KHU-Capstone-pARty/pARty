@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
+using UnityEngine.XR.ARSubsystems;
 using Google.XR.ARCoreExtensions;
+using Unity.Netcode;
+using UnityEngine.EventSystems; 
 
 public enum AnchorHostingPhase
 {
@@ -15,7 +18,7 @@ public enum AnchorResolvingPhase
     nothingToResolve, readyToResolve, resolveInProgress, success, fail
 }
 
-public class CloudAnchorMgr : MonoBehaviour
+public class CloudAnchorMgr : NetworkBehaviour
 {
     [SerializeField]
     private ARAnchorManager anchorMgr;
@@ -23,11 +26,17 @@ public class CloudAnchorMgr : MonoBehaviour
     private Camera arCam;
     private ARCloudAnchor cloudAnchor; // 현재 작업중인 클라우드 앵커 참조
     public ARAnchor anchorToHost; // 외부에서 지정해준 호스팅할 앵커
+    public ARRaycastManager raycastManager;
+    private List<ARRaycastHit> hits = new List<ARRaycastHit>();
+    public GameObject anchorPrefab;
     public AnchorHostingPhase hostPhase;
     public AnchorResolvingPhase resolvePhase;
     public Text text_log;
     public Text text_State;
     private string idToResolve;
+    private bool isStartEstimate = false;
+
+    private GameObject cloudAnchorObj;
 
     // Start is called before the first frame update
     void Start()
@@ -38,8 +47,47 @@ public class CloudAnchorMgr : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        text_State.text = $"Host: {hostPhase.ToString()}, Resolve: {resolvePhase.ToString()}, Cloud Anchor State: {cloudAnchor?.cloudAnchorState.ToString()}";
+        InputProcess();
+        HostResolveProcess();
+    }
 
+    private void InputProcess()
+    {
+        if(Input.touchCount < 1) return;
+
+        Touch touch = Input.GetTouch(0);
+
+        if (touch.phase != TouchPhase.Began) return;
+        
+        if (EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId)) return;
+
+        if (anchorToHost != null)
+        {
+            text_log.text = "Anchor already exists\n" + text_log.text;
+            return;
+        }
+            
+
+        if (raycastManager.Raycast(touch.position,hits,TrackableType.PlaneWithinPolygon))
+        {
+            anchorToHost = anchorMgr.AddAnchor(hits[0].pose);
+            cloudAnchorObj = Instantiate(anchorPrefab,anchorToHost.transform);
+            if (anchorToHost != null)
+            {
+                hostPhase = AnchorHostingPhase.readyToHost;
+            }
+            text_log.text = $"Anchor created at {anchorToHost.transform.position}\n" + text_log.text;
+            isStartEstimate = true;
+        }
+    }
+
+    private void HostResolveProcess()
+    {
+        FeatureMapQuality quality = FeatureMapQuality.Insufficient;
+        if (isStartEstimate)
+            quality = anchorMgr.EstimateFeatureMapQualityForHosting(GetCamPose());
+        text_State.text = $"Map Quality: {quality.ToString()}, Host: {hostPhase.ToString()}, Resolve: {resolvePhase.ToString()}, Cloud Anchor State: {cloudAnchor?.cloudAnchorState.ToString()}";
+        
         if (anchorToHost == null)
         {
             hostPhase = AnchorHostingPhase.nothingToHost;
@@ -59,11 +107,28 @@ public class CloudAnchorMgr : MonoBehaviour
         }
     }
 
+    [ClientRpc]
+    public void SendAnchorIDClientRPC(string id)
+    {
+        if(NetworkManager.Singleton.IsServer)
+        {
+            text_log.text = $"Ignore received Anchor ID: {idToResolve}\n" + text_log.text;
+            return;
+        }
+        
+        idToResolve = id;
+        text_log.text = $"Receive Anchor ID: {idToResolve}\n" + text_log.text;
+    }
+
+    private Pose GetCamPose()
+    {
+        return new Pose(arCam.transform.position, arCam.transform.rotation);
+    }
+
     public void HostAnchor()
     {
         text_log.text = "Host Anchor ...\n" + text_log.text;
-        Pose camPose = new Pose(arCam.transform.position, arCam.transform.rotation);
-        var quality = anchorMgr.EstimateFeatureMapQualityForHosting(camPose);
+        var quality = anchorMgr.EstimateFeatureMapQualityForHosting(GetCamPose());
         text_log.text = $"Feature map quality: {quality.ToString()}\n" + text_log.text;
         cloudAnchor = anchorMgr.HostCloudAnchor(anchorToHost, 1);
         hostPhase = AnchorHostingPhase.hostInProgress;
@@ -89,6 +154,7 @@ public class CloudAnchorMgr : MonoBehaviour
             idToResolve = cloudAnchor.cloudAnchorId;
             text_log.text = $"Successfully Hosted. Anchor ID: {idToResolve}\n" + text_log.text;
             resolvePhase = AnchorResolvingPhase.readyToResolve;
+            SendAnchorIDClientRPC(idToResolve);
         }
         else if (state != CloudAnchorState.TaskInProgress)
         {
@@ -135,6 +201,8 @@ public class CloudAnchorMgr : MonoBehaviour
         {
             resolvePhase = AnchorResolvingPhase.success;
             var pos = cloudAnchor.pose.position;
+            if (cloudAnchorObj != null) Destroy(cloudAnchorObj);
+            cloudAnchorObj = Instantiate(anchorPrefab,cloudAnchor.transform);
             text_log.text = $"Successfully Resolved. Cloud anchor position: {pos}\n" + text_log.text;
         }
         else if (state != CloudAnchorState.TaskInProgress)
