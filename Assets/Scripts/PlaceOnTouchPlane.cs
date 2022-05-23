@@ -5,11 +5,10 @@ using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
-// https://www.youtube.com/watch?v=ylLP09RG_3g
 public class PlaceOnTouchPlane : MonoBehaviour
 {
-    [SerializeField]
-    private Text info;
+    //[SerializeField]
+    //private Text info;
     [SerializeField]
     private GameObject spawnObj;
     [SerializeField]

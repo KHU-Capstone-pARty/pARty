@@ -5,7 +5,6 @@ using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
-// https://www.andreasjakl.com/visualize-ar-depth-maps-in-unity-part-5/
 public class DepthImageVisualizer : MonoBehaviour
 {
     public ARCameraManager CameraManager
@@ -39,8 +38,8 @@ public class DepthImageVisualizer : MonoBehaviour
     [Tooltip("The UI RawImage used to display the image on screen.")]
     private RawImage _rawImage;
 
-    [SerializeField]
-    private Text info;
+    //[SerializeField]
+    //private Text info;
 
     // Update is called once per frame
     void Update()
@@ -61,7 +60,7 @@ public class DepthImageVisualizer : MonoBehaviour
                         if (texture.GetPixel(i-10, j).r- texture.GetPixel(i, j).r>1
                             || texture.GetPixel(i, j - 10).r - texture.GetPixel(i, j).r > 1)
                         {
-                            info.text = ("(" + i * (sw / tw) + ", " + j * (sh / th) + "," + ")");
+                            //info.text = ("(" + i * (sw / tw) + ", " + j * (sh / th) + "," + ")");
                         }
                     }
                 }
