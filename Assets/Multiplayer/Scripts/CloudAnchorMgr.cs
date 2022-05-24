@@ -35,8 +35,9 @@ public class CloudAnchorMgr : NetworkBehaviour
     public Text text_State;
     private string idToResolve;
     private bool isStartEstimate = false;
-
     private GameObject cloudAnchorObj;
+    public GameObject testObj;
+    private bool isPlacingTestObj = false;
 
     // Start is called before the first frame update
     void Start()
@@ -61,12 +62,29 @@ public class CloudAnchorMgr : NetworkBehaviour
         
         if (EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId)) return;
 
-        if (anchorToHost != null)
+        if (anchorToHost != null && !isPlacingTestObj)
         {
             text_log.text = "Anchor already exists\n" + text_log.text;
             return;
         }
-            
+        else if (isPlacingTestObj)
+        {
+            if (raycastManager.Raycast(touch.position,hits,TrackableType.PlaneWithinPolygon))
+            {
+                var hitPose = hits[0].pose;
+                var relPose = GetRelativePose(hitPose);
+                SpawnObjClientRPC(relPose.position, relPose.rotation);
+            }
+
+            return;
+        }
+
+
+        if (!NetworkManager.IsServer)
+        {
+            text_log.text = $"You cannot create cloud anchor.\n" + text_log.text;
+            return;
+        }    
 
         if (raycastManager.Raycast(touch.position,hits,TrackableType.PlaneWithinPolygon))
         {
@@ -214,6 +232,40 @@ public class CloudAnchorMgr : NetworkBehaviour
             resolvePhase = AnchorResolvingPhase.resolveInProgress;
         }
 
+    }
+
+    public Pose GetRelativePose(Pose worldVec)
+    {
+        if (cloudAnchor == null)
+        {
+            Debug.LogError("clouad anchor is null");
+            return Pose.identity;
+        }
+        return cloudAnchor.transform.InverseTransformPose(worldVec);
+    }
+
+    public Pose GetWorldPose(Pose relVec)
+    {
+        if (cloudAnchor == null)
+        {
+            Debug.LogError("clouad anchor is null");
+            return Pose.identity;
+        }
+        return cloudAnchor.transform.TransformPose(relVec);
+    }
+
+    public void TogglePlacingTestObj(bool b)
+    {
+        isPlacingTestObj = !isPlacingTestObj;
+    }
+
+    [ClientRpc]
+    private void SpawnObjClientRPC(Vector3 relPos, Quaternion relRot)
+    {
+        Pose relPose = new Pose(relPos, relRot);
+        Pose worldPose = GetWorldPose(relPose);
+        Instantiate(testObj,worldPose.position,worldPose.rotation);
+        text_log.text = $"Test obj created. Relative: {relPose.ToString()}, World: {worldPose.ToString()}\n" + text_log.text;
     }
 
 }
