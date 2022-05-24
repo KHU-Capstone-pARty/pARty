@@ -25,6 +25,7 @@ public class LANMgr : MonoBehaviour
             if (ip.AddressFamily == AddressFamily.InterNetwork)
             {
                 currentIP = ip.ToString();
+                break;
             }
         }
     }
