@@ -30,6 +30,10 @@ public class PlaceOnTouchPlane : MonoBehaviour
                     Instantiate(spawnObj, h.position, h.rotation);
                     //info.text = ("(" + h.position.x + ", " + h.position.y + "," + h.position.z + ")");
                 }
+                else
+                {
+                    //info.text = ("(" + t.position.x + ", " + t.position.y + "," + ")");
+                }
             }
         }
     }
