@@ -104,7 +104,10 @@ public class CloudAnchorMgr : NetworkBehaviour
         FeatureMapQuality quality = FeatureMapQuality.Insufficient;
         if (isStartEstimate)
             quality = anchorMgr.EstimateFeatureMapQualityForHosting(GetCamPose());
-        text_State.text = $"Map Quality: {quality.ToString()}, Host: {hostPhase.ToString()}, Resolve: {resolvePhase.ToString()}, Cloud Anchor State: {cloudAnchor?.cloudAnchorState.ToString()}";
+        Vector3 anchorPos = Vector3.zero;
+        if (cloudAnchor != null)
+            anchorPos = cloudAnchor.transform.position;
+        text_State.text = $"Anchor: {anchorPos}, Map Quality: {quality.ToString()}, Host: {hostPhase.ToString()}, Resolve: {resolvePhase.ToString()}, Cloud Anchor State: {cloudAnchor?.cloudAnchorState.ToString()}";
         
         if (anchorToHost == null)
         {
@@ -264,7 +267,7 @@ public class CloudAnchorMgr : NetworkBehaviour
     {
         Pose relPose = new Pose(relPos, relRot);
         Pose worldPose = GetWorldPose(relPose);
-        Instantiate(testObj,worldPose.position,worldPose.rotation);
+        Instantiate(testObj,worldPose.position,worldPose.rotation,cloudAnchor.transform);
         text_log.text = $"Test obj created. Relative: {relPose.ToString()}, World: {worldPose.ToString()}\n" + text_log.text;
     }
 
