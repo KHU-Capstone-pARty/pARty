@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
-public class SpawnLocManager : MonoBehaviour
+public class DepthImageVisualizer : MonoBehaviour
 {
     public ARCameraManager CameraManager
     {
@@ -28,103 +28,47 @@ public class SpawnLocManager : MonoBehaviour
     [Tooltip("The AROcclusionManager which will produce depth textures.")]
     private AROcclusionManager _occlusionManager;
 
-    [SerializeField]
-    private ARRaycastManager raycastManager;
+    public RawImage RawImage
+    {
+        get => _rawImage;
+        set => _rawImage = value;
+    }
 
     [SerializeField]
     [Tooltip("The UI RawImage used to display the image on screen.")]
     private RawImage _rawImage;
 
-    [SerializeField]
-    private GameObject spawnObj;
-
-    [SerializeField]
-    private Text info;
-
-    //private Texture2D texture;
-    private float tw;
-    private float th;
-    private float sw ;
-    private float sh;
-
-    private float currTime = 0;
-
-    private void Start()
-    {
-        sw = Screen.width; sh = Screen.height;
-    }
+    //[SerializeField]
+    //private Text info;
 
     // Update is called once per frame
     void Update()
     {
-        currTime += Time.deltaTime;
-
-        if (currTime > 10)
-        {
-            SpawnMonster();
-            currTime = 0;
-        }
-    }
-
-    private List<Vector2> GetSpawnLoc()
-    {
-        List<Vector2> locations = new List<Vector2>();
         if (OcclusionManager.TryAcquireEnvironmentDepthCpuImage(out XRCpuImage image))
         {
             using (image)
             {
+                
                 // Use the texture.
                 Texture2D texture = UpdateRawImage(_rawImage, image);
-                tw = texture.width; th = texture.height;
-                sw = Screen.width; sh = Screen.height;
-                //info.text = tw + " " + th + ", " + sw + " " + sh;
-                for (int i = 3; i < tw; i += 3)
+                float tw = texture.width; float th = texture.height;
+                float sw = Screen.width; float sh = Screen.height;
+                for (int i = 10; i < tw; i += 10)
                 {
-                    for (int j = 3; j < th; j += 3)
+                    for (int j = 10; j < th; j += 10)
                     {
-                        if (texture.GetPixel(i - 3, j).r - texture.GetPixel(i, j).r > 0.1f
-                            || texture.GetPixel(i, j - 3).r - texture.GetPixel(i, j).r > 0.1f)
+                        if (texture.GetPixel(i-10, j).r- texture.GetPixel(i, j).r>1
+                            || texture.GetPixel(i, j - 10).r - texture.GetPixel(i, j).r > 1)
                         {
-                            locations.Add(new Vector2(i, j));
-                            //texture.SetPixel(i, j, new Color(255, 255, 255));
-                            // info.text = ("(" + i * (sw / tw) + ", " + j * (sh / th) + "," + ")");
+                            //info.text = ("(" + i * (sw / tw) + ", " + j * (sh / th) + "," + ")");
                         }
                     }
                 }
             }
         }
-        // info.text = locations.Count.ToString();
-        return locations;
     }
 
-    private void SpawnMonster()
-    {
-        List<Vector2> locations = GetSpawnLoc();
-
-        if (locations.Count != 0)
-        {
-            System.Random rand = new System.Random();
-            int idx = rand.Next(locations.Count);
-            Vector2 textureLoc = locations[idx];
-            Vector2 spawnLoc = new Vector2(sw * (1 - textureLoc.y / th), textureLoc.x * (sh / tw));
-            //info.text = (idx + ": " + spawnLoc.x + " " + spawnLoc.y);
-
-            List<ARRaycastHit> hitsList = new List<ARRaycastHit>();
-            if (raycastManager.Raycast(spawnLoc, hitsList, TrackableType.PlaneWithinPolygon))
-            {
-                var h = hitsList[0].pose;
-                Instantiate(spawnObj, h.position, h.rotation);
-                info.text = ("(" + h.position.x + ", " + h.position.y + "," + h.position.z + ")");
-            }
-            else
-            {
-                info.text = (idx + ": " + spawnLoc.x + " " + spawnLoc.y);
-            }
-        }
-        //else
-            //info.text = "null";
-    }
-
+    // Source: https://github.com/Unity-Technologies/arfoundation-samples/blob/6296272a416925b56ce85470e0c7bef5c913ec0c/Assets/Scripts/CpuImageSample.cs
     private static Texture2D UpdateRawImage(RawImage rawImage, XRCpuImage cpuImage)
     {
         // Get the texture associated with the UI.RawImage that we wish to display on screen.
@@ -155,6 +99,7 @@ public class SpawnLocManager : MonoBehaviour
         // Perform the conversion.
         cpuImage.Convert(conversionParams, rawTextureData);
 
+        /*
         // Get the aspect ratio for the current texture.
         var textureAspectRatio = (float)texture.width / texture.height;
 
@@ -165,6 +110,7 @@ public class SpawnLocManager : MonoBehaviour
         var rectSize = new Vector2(maxDimension, minDimension);
         //var rectSize = new Vector2(minDimension, maxDimension);   //Portrait
         rawImage.rectTransform.sizeDelta = rectSize;
+        */
 
         // "Apply" the new pixel data to the Texture2D.
         texture.Apply();
