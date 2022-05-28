@@ -22,7 +22,7 @@ public class SpawnManager : MonoBehaviour
     void Start()
     {
         CurrMobCnt = 0;
-        ObjectiveMobCnt = 2;
+        ObjectiveMobCnt = 16;
 
         MobXCycle = 10;
         MobXExist = false;
@@ -38,7 +38,7 @@ public class SpawnManager : MonoBehaviour
     void Update()
     {
         runTime += Time.deltaTime;
-        Debug.Log(runTime);
+        // Debug.Log(runTime);
         CheckMobExist();
         if(CurrMobCnt >= ObjectiveMobCnt)
         {

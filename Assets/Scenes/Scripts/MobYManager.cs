@@ -37,6 +37,10 @@ public class MobYManager : MonoBehaviour
             {
                 MobY.transform.position = Vector3.Lerp(getTmpPos() , ARCamPos, runTime / duration);
             }
+            else
+            {
+                Destroy(MobY);
+            }
         }
     }
 

@@ -37,6 +37,10 @@ public class MobXManager : MonoBehaviour
             {
                 MobX.transform.position = Vector3.Lerp(getTmpPos() , ARCamPos, runTime / duration);
             }
+            else
+            {
+                Destroy(MobX);
+            }
         }
     }
 
