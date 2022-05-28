@@ -20,11 +20,14 @@ public enum AnchorResolvingPhase
 
 public class CloudAnchorMgr : NetworkBehaviour
 {
+    public static CloudAnchorMgr Singleton;
     [SerializeField]
     private ARAnchorManager anchorMgr;
     [SerializeField]
     private Camera arCam;
-    private ARCloudAnchor cloudAnchor; // 현재 작업중인 클라우드 앵커 참조
+    [HideInInspector]
+    public ARCloudAnchor cloudAnchor; // 현재 작업중인 클라우드 앵커 참조
+    [HideInInspector]
     public ARAnchor anchorToHost; // 외부에서 지정해준 호스팅할 앵커
     public ARRaycastManager raycastManager;
     private List<ARRaycastHit> hits = new List<ARRaycastHit>();
@@ -38,6 +41,20 @@ public class CloudAnchorMgr : NetworkBehaviour
     private GameObject cloudAnchorObj;
     public GameObject testObj;
     private bool isPlacingTestObj = false;
+
+    private void Awake()
+    {
+        if (Singleton == null)
+        {
+            Singleton = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            if (Singleton != this)
+                Destroy(this.gameObject);
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -269,6 +286,11 @@ public class CloudAnchorMgr : NetworkBehaviour
         Pose worldPose = GetWorldPose(relPose);
         Instantiate(testObj,worldPose.position,worldPose.rotation,cloudAnchor.transform);
         text_log.text = $"Test obj created. Relative: {relPose.ToString()}, World: {worldPose.ToString()}\n" + text_log.text;
+    }
+
+    public void DebugLog(string msg)
+    {
+        text_log.text = $"{msg}\n" + text_log.text;
     }
 
 }
