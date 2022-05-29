@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7322548031843889867
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7322548031843889865}
+  - component: {fileID: 7322548031843889866}
+  - component: {fileID: 7322548031843889864}
+  m_Layer: 0
+  m_Name: CloudAnchorManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7322548031843889865
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7322548031843889867}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 527.5377, y: 261.6042, z: -46.129967}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7322548031843889866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7322548031843889867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c98a380011104ca449159633a97b18c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  anchorMgr: {fileID: 0}
+  arCam: {fileID: 0}
+  cloudAnchor: {fileID: 0}
+  anchorToHost: {fileID: 0}
+  raycastManager: {fileID: 0}
+  anchorPrefab: {fileID: 1088698322870422, guid: 24e0d8225ada9c84d8890989c0b547af, type: 3}
+  hostPhase: 0
+  resolvePhase: 0
+  text_log: {fileID: 0}
+  text_State: {fileID: 0}
+  testObj: {fileID: 1130955691468970, guid: 8abe5d52e32d04546a61245110e944f3, type: 3}
+  ARSyncPrefab:
+  - {fileID: 1130955691468970, guid: 8abe5d52e32d04546a61245110e944f3, type: 3}
+--- !u!114 &7322548031843889864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7322548031843889867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1

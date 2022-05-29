@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 39165758}
   - component: {fileID: 39165757}
   m_Layer: 5
-  m_Name: MoveButton
+  m_Name: StartGame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -201,14 +201,14 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 39165758}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 785971897}
         m_TargetAssemblyTypeName: LANMgr, Assembly-CSharp
-        m_MethodName: SubmitNewPosition
+        m_MethodName: StartGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -659,76 +659,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 471118755}
   m_CullTransparentMesh: 1
---- !u!1 &572959652
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 572959654}
-  - component: {fileID: 572959653}
-  - component: {fileID: 572959655}
-  m_Layer: 0
-  m_Name: CloudAnchorManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &572959653
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 572959652}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c98a380011104ca449159633a97b18c0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  anchorMgr: {fileID: 155461127}
-  arCam: {fileID: 1513273838}
-  anchorToHost: {fileID: 0}
-  raycastManager: {fileID: 155461129}
-  anchorPrefab: {fileID: 1088698322870422, guid: 24e0d8225ada9c84d8890989c0b547af, type: 3}
-  hostPhase: 0
-  resolvePhase: 0
-  text_log: {fileID: 1738162679}
-  text_State: {fileID: 645568338}
-  testObj: {fileID: 1130955691468970, guid: 8abe5d52e32d04546a61245110e944f3, type: 3}
---- !u!4 &572959654
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 572959652}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 527.5377, y: 261.6042, z: -46.129967}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &572959655
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 572959652}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3164798735
-  AlwaysReplicateAsRoot: 0
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
 --- !u!1 &645568336
 GameObject:
   m_ObjectHideFlags: 0
@@ -808,6 +738,60 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 645568336}
   m_CullTransparentMesh: 1
+--- !u!1 &653011141
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 653011143}
+  - component: {fileID: 653011142}
+  m_Layer: 0
+  m_Name: Ref
+  m_TagString: Ref
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &653011142
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 653011141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca7d2b1bc6fb46449987a3fe6b552b90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  anchorMgr: {fileID: 155461127}
+  arCam: {fileID: 1513273838}
+  raycastManager: {fileID: 155461129}
+  anchorPrefab: {fileID: 1088698322870422, guid: 24e0d8225ada9c84d8890989c0b547af, type: 3}
+  text_log: {fileID: 1738162679}
+  text_State: {fileID: 645568338}
+  ARSyncPrefab:
+  - {fileID: 1130955691468970, guid: 8abe5d52e32d04546a61245110e944f3, type: 3}
+  hostAnchorButton: {fileID: 1030941003}
+  resolveAnchorButton: {fileID: 1447869821}
+  placeTestObjToggle: {fileID: 1544003078}
+--- !u!4 &653011143
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 653011141}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 232.45932, y: 349.69525, z: -178.59248}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &685581296
 GameObject:
   m_ObjectHideFlags: 0
@@ -1187,6 +1171,7 @@ MonoBehaviour:
   moveButton: {fileID: 39165755}
   text_Status: {fileID: 1152675551}
   inputF_IP: {fileID: 337221841}
+  cloudAnchorMgrPrefab: {fileID: 7322548031843889867, guid: 14aab7ccfba47cf468e7da9bb2f2064c, type: 3}
 --- !u!4 &785971898
 Transform:
   m_ObjectHideFlags: 0
@@ -1265,7 +1250,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1030941001
 GameObject:
@@ -1349,19 +1334,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1030941004}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 572959653}
-        m_TargetAssemblyTypeName: CloudAnchorMgr, Assembly-CSharp
-        m_MethodName: HostAnchor
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1030941004
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1557,12 +1530,12 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 1181609017}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 572959653}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: CloudAnchorMgr, Assembly-CSharp
         m_MethodName: CreateTestAnchor
         m_Mode: 1
@@ -1682,7 +1655,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Move
+  m_Text: Start Game
 --- !u!222 &1326799778
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1852,19 +1825,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1447869822}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 572959653}
-        m_TargetAssemblyTypeName: CloudAnchorMgr, Assembly-CSharp
-        m_MethodName: ResolveAnchor
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1447869822
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2186,19 +2147,7 @@ MonoBehaviour:
   m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 572959653}
-        m_TargetAssemblyTypeName: CloudAnchorMgr, Assembly-CSharp
-        m_MethodName: TogglePlacingTestObj
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_IsOn: 0
 --- !u!1 &1668628334
 GameObject:
@@ -2303,7 +2252,7 @@ RectTransform:
   - {fileID: 1447869820}
   - {fileID: 1544003077}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -2877,7 +2826,17 @@ MonoBehaviour:
     ProtocolVersion: 0
     NetworkTransport: {fileID: 2046180543}
     PlayerPrefab: {fileID: 0}
-    NetworkPrefabs: []
+    NetworkPrefabs:
+    - Override: 0
+      Prefab: {fileID: 7322548031843889867, guid: 14aab7ccfba47cf468e7da9bb2f2064c, type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
+    - Override: 0
+      Prefab: {fileID: 1130955691468970, guid: 8abe5d52e32d04546a61245110e944f3, type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
     TickRate: 30
     ClientConnectionBufferTimeout: 10
     ConnectionApproval: 0

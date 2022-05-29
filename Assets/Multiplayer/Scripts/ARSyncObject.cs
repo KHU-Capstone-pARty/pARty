@@ -9,12 +9,13 @@ public class ARSyncObject : NetworkBehaviour
     public NetworkVariable<Vector3> Position = new NetworkVariable<Vector3>(
         default,
         NetworkVariableReadPermission.Everyone,
-        NetworkVariableWritePermission.Owner);
+        NetworkVariableWritePermission.Server);
 
     public NetworkVariable<Quaternion> Rotation = new NetworkVariable<Quaternion>(
         default,
         NetworkVariableReadPermission.Everyone,
-        NetworkVariableWritePermission.Owner);
+        NetworkVariableWritePermission.Server);
+    private NetworkObject netObj;
     void Start()
     {
         Init();
@@ -28,20 +29,23 @@ public class ARSyncObject : NetworkBehaviour
     private void OnEnable()
     {
         Position.OnValueChanged += OnPositionChanged;
+        Rotation.OnValueChanged += OnRotationChanged;
     }
 
     private void OnDisable() 
     {
         Position.OnValueChanged -= OnPositionChanged;
+        Rotation.OnValueChanged -= OnRotationChanged;
     }
 
     public void Init()
     {
-        CloudAnchorMgr.Singleton.DebugLog("ARSyncObject Init");
+        netObj = GetComponent<NetworkObject>();
+        CloudAnchorMgr.Singleton.DebugLog($"ARSyncObject Init. Owner: {IsOwner}, NetObj: {netObj != null}");
         var pose = new Pose(transform.position, transform.rotation);
         pose = CloudAnchorMgr.Singleton.GetRelativePose(pose);
 
-        if (!IsOwner) return;
+        if (!IsServer) return;
 
         Position.Value = pose.position;
         Rotation.Value = pose.rotation;
@@ -58,14 +62,16 @@ public class ARSyncObject : NetworkBehaviour
 
     private void OnRotationChanged(Quaternion pre, Quaternion cur)
     {
-        
+        var pose = new Pose(Position.Value, cur);
+        pose = CloudAnchorMgr.Singleton.GetWorldPose(pose);
+        transform.rotation = pose.rotation;
     }
 
     public void TestMoveFunction()
     {
         //CloudAnchorMgr.Singleton.DebugLog($"TestMoveFunction. IsOwner: {IsOwner}");
-        if (!IsOwner) return;
+        if (!IsServer) return;
 
-        Position.Value += new Vector3(0f,0f,0.1f);
+        Position.Value += new Vector3(0f,0f,0.01f);
     }
 }

@@ -21,26 +21,20 @@ public enum AnchorResolvingPhase
 public class CloudAnchorMgr : NetworkBehaviour
 {
     public static CloudAnchorMgr Singleton;
-    [SerializeField]
-    private ARAnchorManager anchorMgr;
-    [SerializeField]
-    private Camera arCam;
     [HideInInspector]
     public ARCloudAnchor cloudAnchor; // 현재 작업중인 클라우드 앵커 참조
     [HideInInspector]
     public ARAnchor anchorToHost; // 외부에서 지정해준 호스팅할 앵커
-    public ARRaycastManager raycastManager;
     private List<ARRaycastHit> hits = new List<ARRaycastHit>();
-    public GameObject anchorPrefab;
+    [HideInInspector]
     public AnchorHostingPhase hostPhase;
+    [HideInInspector]
     public AnchorResolvingPhase resolvePhase;
-    public Text text_log;
-    public Text text_State;
     private string idToResolve;
     private bool isStartEstimate = false;
     private GameObject cloudAnchorObj;
-    public GameObject testObj;
     private bool isPlacingTestObj = false;
+    private PlayerPrefabRef playerRef;
 
     private void Awake()
     {
@@ -59,7 +53,10 @@ public class CloudAnchorMgr : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        playerRef = GameObject.FindWithTag("Ref").GetComponent<PlayerPrefabRef>();
+        playerRef.hostAnchorButton.onClick.AddListener(HostAnchor);
+        playerRef.resolveAnchorButton.onClick.AddListener(ResolveAnchor);
+        playerRef.placeTestObjToggle.onValueChanged.AddListener((b)=>{isPlacingTestObj = !isPlacingTestObj;});
     }
 
     // Update is called once per frame
@@ -81,16 +78,16 @@ public class CloudAnchorMgr : NetworkBehaviour
 
         if (anchorToHost != null && !isPlacingTestObj)
         {
-            text_log.text = "Anchor already exists\n" + text_log.text;
+            playerRef.text_log.text = "Anchor already exists\n" + playerRef.text_log.text;
             return;
         }
         else if (isPlacingTestObj)
         {
-            if (raycastManager.Raycast(touch.position,hits,TrackableType.PlaneWithinPolygon))
+            if (playerRef.raycastManager.Raycast(touch.position,hits,TrackableType.PlaneWithinPolygon))
             {
                 var hitPose = hits[0].pose;
                 var relPose = GetRelativePose(hitPose);
-                SpawnObjClientRPC(relPose.position, relPose.rotation);
+                SpawnARSyncObject(0, relPose.position, relPose.rotation);
             }
 
             return;
@@ -99,19 +96,19 @@ public class CloudAnchorMgr : NetworkBehaviour
 
         if (!NetworkManager.IsServer)
         {
-            text_log.text = $"You cannot create cloud anchor.\n" + text_log.text;
+            playerRef.text_log.text = $"You cannot create cloud anchor.\n" + playerRef.text_log.text;
             return;
         }    
 
-        if (raycastManager.Raycast(touch.position,hits,TrackableType.PlaneWithinPolygon))
+        if (playerRef.raycastManager.Raycast(touch.position,hits,TrackableType.PlaneWithinPolygon))
         {
-            anchorToHost = anchorMgr.AddAnchor(hits[0].pose);
-            cloudAnchorObj = Instantiate(anchorPrefab,anchorToHost.transform);
+            anchorToHost = playerRef.anchorMgr.AddAnchor(hits[0].pose);
+            cloudAnchorObj = Instantiate(playerRef.anchorPrefab,anchorToHost.transform);
             if (anchorToHost != null)
             {
                 hostPhase = AnchorHostingPhase.readyToHost;
             }
-            text_log.text = $"Anchor created at {anchorToHost.transform.position}\n" + text_log.text;
+            playerRef.text_log.text = $"Anchor created at {anchorToHost.transform.position}\n" + playerRef.text_log.text;
             isStartEstimate = true;
         }
     }
@@ -120,11 +117,11 @@ public class CloudAnchorMgr : NetworkBehaviour
     {
         FeatureMapQuality quality = FeatureMapQuality.Insufficient;
         if (isStartEstimate)
-            quality = anchorMgr.EstimateFeatureMapQualityForHosting(GetCamPose());
+            quality = playerRef.anchorMgr.EstimateFeatureMapQualityForHosting(GetCamPose());
         Vector3 anchorPos = Vector3.zero;
         if (cloudAnchor != null)
             anchorPos = cloudAnchor.transform.position;
-        text_State.text = $"Anchor: {anchorPos}, Map Quality: {quality.ToString()}, Host: {hostPhase.ToString()}, Resolve: {resolvePhase.ToString()}, Cloud Anchor State: {cloudAnchor?.cloudAnchorState.ToString()}";
+        playerRef.text_State.text = $"Anchor: {anchorPos}, Map Quality: {quality.ToString()}, Host: {hostPhase.ToString()}, Resolve: {resolvePhase.ToString()}, Cloud Anchor State: {cloudAnchor?.cloudAnchorState.ToString()}";
         
         if (anchorToHost == null)
         {
@@ -150,36 +147,36 @@ public class CloudAnchorMgr : NetworkBehaviour
     {
         if(NetworkManager.Singleton.IsServer)
         {
-            text_log.text = $"Ignore received Anchor ID: {idToResolve}\n" + text_log.text;
+            playerRef.text_log.text = $"Ignore received Anchor ID: {idToResolve}\n" + playerRef.text_log.text;
             return;
         }
         
         idToResolve = id;
-        text_log.text = $"Receive Anchor ID: {idToResolve}\n" + text_log.text;
+        playerRef.text_log.text = $"Receive Anchor ID: {idToResolve}\n" + playerRef.text_log.text;
     }
 
     private Pose GetCamPose()
     {
-        return new Pose(arCam.transform.position, arCam.transform.rotation);
+        return new Pose(playerRef.arCam.transform.position, playerRef.arCam.transform.rotation);
     }
 
     public void HostAnchor()
     {
-        text_log.text = "Host Anchor ...\n" + text_log.text;
-        var quality = anchorMgr.EstimateFeatureMapQualityForHosting(GetCamPose());
-        text_log.text = $"Feature map quality: {quality.ToString()}\n" + text_log.text;
-        cloudAnchor = anchorMgr.HostCloudAnchor(anchorToHost, 1);
+        playerRef.text_log.text = "Host Anchor ...\n" + playerRef.text_log.text;
+        var quality = playerRef.anchorMgr.EstimateFeatureMapQualityForHosting(GetCamPose());
+        playerRef.text_log.text = $"Feature map quality: {quality.ToString()}\n" + playerRef.text_log.text;
+        cloudAnchor = playerRef.anchorMgr.HostCloudAnchor(anchorToHost, 1);
         hostPhase = AnchorHostingPhase.hostInProgress;
         if (cloudAnchor == null)
         {
             //fail
-            text_log.text = "Host failed\n" + text_log.text;
+            playerRef.text_log.text = "Host failed\n" + playerRef.text_log.text;
             hostPhase = AnchorHostingPhase.fail;
         }
         else
         {
             //success
-            text_log.text = "Cloud anchor has been created\n" + text_log.text;
+            playerRef.text_log.text = "Cloud anchor has been created\n" + playerRef.text_log.text;
         }
     }
 
@@ -190,7 +187,7 @@ public class CloudAnchorMgr : NetworkBehaviour
         {
             hostPhase = AnchorHostingPhase.success;
             idToResolve = cloudAnchor.cloudAnchorId;
-            text_log.text = $"Successfully Hosted. Anchor ID: {idToResolve}\n" + text_log.text;
+            playerRef.text_log.text = $"Successfully Hosted. Anchor ID: {idToResolve}\n" + playerRef.text_log.text;
             resolvePhase = AnchorResolvingPhase.readyToResolve;
             SendAnchorIDClientRPC(idToResolve);
         }
@@ -207,8 +204,8 @@ public class CloudAnchorMgr : NetworkBehaviour
 
     public void CreateTestAnchor()
     {
-        text_log.text = "Test anchor created\n" + text_log.text;
-        anchorToHost = anchorMgr.AddAnchor(new Pose(Vector3.zero, Quaternion.identity));
+        playerRef.text_log.text = "Test anchor created\n" + playerRef.text_log.text;
+        anchorToHost = playerRef.anchorMgr.AddAnchor(new Pose(Vector3.zero, Quaternion.identity));
         if (anchorToHost != null)
         {
             hostPhase = AnchorHostingPhase.readyToHost;
@@ -217,18 +214,18 @@ public class CloudAnchorMgr : NetworkBehaviour
 
     public void ResolveAnchor()
     {
-        text_log.text = "Resolve Anchor ...\n" + text_log.text;
+        playerRef.text_log.text = "Resolve Anchor ...\n" + playerRef.text_log.text;
         cloudAnchor = null;
-        cloudAnchor = anchorMgr.ResolveCloudAnchorId(idToResolve);
+        cloudAnchor = playerRef.anchorMgr.ResolveCloudAnchorId(idToResolve);
         resolvePhase = AnchorResolvingPhase.resolveInProgress;
         if (cloudAnchor == null)
         {
-            text_log.text = "Resolve failed\n" + text_log.text;
+            playerRef.text_log.text = "Resolve failed\n" + playerRef.text_log.text;
             resolvePhase = AnchorResolvingPhase.fail;
         }
         else
         {
-            text_log.text = "Cloud anchor has been created\n" + text_log.text;
+            playerRef.text_log.text = "Cloud anchor has been created\n" + playerRef.text_log.text;
         }
     }
 
@@ -240,8 +237,8 @@ public class CloudAnchorMgr : NetworkBehaviour
             resolvePhase = AnchorResolvingPhase.success;
             var pos = cloudAnchor.pose.position;
             if (cloudAnchorObj != null) Destroy(cloudAnchorObj);
-            cloudAnchorObj = Instantiate(anchorPrefab,cloudAnchor.transform);
-            text_log.text = $"Successfully Resolved. Cloud anchor position: {pos}\n" + text_log.text;
+            cloudAnchorObj = Instantiate(playerRef.anchorPrefab,cloudAnchor.transform);
+            playerRef.text_log.text = $"Successfully Resolved. Cloud anchor position: {pos}\n" + playerRef.text_log.text;
         }
         else if (state != CloudAnchorState.TaskInProgress)
         {
@@ -280,17 +277,55 @@ public class CloudAnchorMgr : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void SpawnObjClientRPC(Vector3 relPos, Quaternion relRot)
+    private void SpawnObjClientRpc(int objNum, Vector3 relPos, Quaternion relRot, ulong ownerId)
     {
+        if (!NetworkManager.IsServer) return;
         Pose relPose = new Pose(relPos, relRot);
         Pose worldPose = GetWorldPose(relPose);
-        Instantiate(testObj,worldPose.position,worldPose.rotation,cloudAnchor.transform);
-        text_log.text = $"Test obj created. Relative: {relPose.ToString()}, World: {worldPose.ToString()}\n" + text_log.text;
+        var instance = Instantiate(playerRef.ARSyncPrefab[objNum], worldPose.position,worldPose.rotation,cloudAnchor.transform);
+        playerRef.text_log.text = $"Test obj created. Owner: {ownerId}, Relative: {relPose.ToString()}, World: {worldPose.ToString()}\n" + playerRef.text_log.text;
+        NetworkObject netObj = instance.GetComponent<NetworkObject>();
+        if (netObj == null)
+        {
+            DebugLog($"NetObj is null");
+            return;
+        }
+        netObj.SpawnWithOwnership(ownerId);
+    }
+
+    [ServerRpc(RequireOwnership=false)]
+    private void SpawnObjServerRpc(int objNum, Vector3 relPos, Quaternion relRot, ulong ownerId)
+    {
+        DebugLog("Receive SpawnObjServerRPC");
+        Pose relPose = new Pose(relPos, relRot);
+        Pose worldPose = GetWorldPose(relPose);
+        var instance = Instantiate(playerRef.ARSyncPrefab[objNum], worldPose.position,worldPose.rotation,cloudAnchor.transform);
+        playerRef.text_log.text = $"Test obj created. Owner: {ownerId}, Relative: {relPose.ToString()}, World: {worldPose.ToString()}\n" + playerRef.text_log.text;
+        NetworkObject netObj = instance.GetComponent<NetworkObject>();
+        if (netObj == null)
+        {
+            DebugLog($"NetObj is null");
+            return;
+        }
+        netObj.SpawnWithOwnership(ownerId);
     }
 
     public void DebugLog(string msg)
     {
-        text_log.text = $"{msg}\n" + text_log.text;
+        playerRef.text_log.text = $"{msg}\n" + playerRef.text_log.text;
     }
 
+    public void SpawnARSyncObject(int objNum, Vector3 relPos, Quaternion relRot)
+    {
+        if (NetworkManager.IsServer)
+        {
+            DebugLog("Spawn AR Sync Object: call client rpc");
+            SpawnObjClientRpc(objNum, relPos, relRot, NetworkManager.Singleton.LocalClientId);
+        }
+        else
+        {
+            DebugLog("Spawn AR Sync Object: call server rpc");
+            SpawnObjServerRpc(objNum, relPos, relRot, NetworkManager.Singleton.LocalClientId);
+        }
+    }
 }
