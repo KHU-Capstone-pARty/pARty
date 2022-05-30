@@ -4,7 +4,8 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Ball
+  - CloudAnchorMgr
+  - Ref
   layers:
   - Default
   - TransparentFX

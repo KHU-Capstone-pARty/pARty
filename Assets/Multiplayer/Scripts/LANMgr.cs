@@ -15,6 +15,13 @@ public class LANMgr : MonoBehaviour
     public Text text_Status;
     public InputField inputF_IP;
     private string currentIP;
+    public GameObject cloudAnchorMgrPrefab;
+
+    public void StartGame()
+    {
+        var obj = Instantiate(cloudAnchorMgrPrefab,Vector3.zero,Quaternion.identity);
+        obj.GetComponent<NetworkObject>().Spawn();
+    }
 
     public void StartHost()
     {
