@@ -15,6 +15,8 @@ public class MobYManager : MonoBehaviour
     public GameObject SpawnController;
     public bool MobYExist;
 
+    Vector3 spawnPos;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -35,7 +37,7 @@ public class MobYManager : MonoBehaviour
             runTime += Time.deltaTime;
             if(runTime < duration)
             {
-                MobY.transform.position = Vector3.Lerp(getTmpPos() , ARCamPos, runTime / duration);
+                MobY.transform.position = Vector3.Lerp(spawnPos , ARCamPos, runTime / duration);
             }
             else
             {
@@ -45,12 +47,13 @@ public class MobYManager : MonoBehaviour
     }
 
     // spawn MobY
-    public void SpawnMobY()
+    public void SpawnMobY(Vector3 _spawnPos)
     {
         runTime = 0.0f;
         duration = 10.0f;
+        spawnPos = _spawnPos;
 
-        MobY = Instantiate(MobYfab, getTmpPos() , Quaternion.Euler(new Vector3(0,180,0)));
+        MobY = Instantiate(MobYfab, spawnPos , Quaternion.Euler(new Vector3(0,180,0)));
         SpawnController.GetComponent<SpawnManager>().FieldMobCnt++;
         MobYExist = true;
     }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
 public class MobXManager : MonoBehaviour
@@ -14,6 +15,9 @@ public class MobXManager : MonoBehaviour
     float duration;
     public GameObject SpawnController;
     public bool MobXExist;
+    public Text TextDebug;
+
+    Vector3 spawnPos;
 
     // Start is called before the first frame update
     void Start()
@@ -35,7 +39,7 @@ public class MobXManager : MonoBehaviour
             runTime += Time.deltaTime;
             if(runTime < duration)
             {
-                MobX.transform.position = Vector3.Lerp(getTmpPos() , ARCamPos, runTime / duration);
+                MobX.transform.position = Vector3.Lerp(spawnPos , ARCamPos, runTime / duration);
             }
             else
             {
@@ -45,12 +49,13 @@ public class MobXManager : MonoBehaviour
     }
 
     // spawn MobX
-    public void SpawnMobX()
+    public void SpawnMobX(Vector3 _spawnPos)
     {
         runTime = 0.0f;
         duration = 10.0f;
-
-        MobX = Instantiate(MobXfab, getTmpPos() , Quaternion.Euler(new Vector3(0,180,0)));
+        spawnPos = _spawnPos;
+        
+        MobX = Instantiate(MobXfab, spawnPos, Quaternion.Euler(new Vector3(0,180,0)));
         SpawnController.GetComponent<SpawnManager>().FieldMobCnt++;
         MobXExist = true;
     }

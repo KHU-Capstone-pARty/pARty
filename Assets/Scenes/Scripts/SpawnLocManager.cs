@@ -49,6 +49,8 @@ public class SpawnLocManager : MonoBehaviour
 
     private float currTime = 0;
 
+    public Text TextDebug;
+
     private void Start()
     {
         sw = Screen.width; sh = Screen.height;
@@ -57,20 +59,23 @@ public class SpawnLocManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        /*
         currTime += Time.deltaTime;
 
         if (currTime > 10)
         {
             SpawnMonster();
             currTime = 0;
-        }
+        }*/
     }
 
     private List<Vector2> GetSpawnLoc()
     {
         List<Vector2> locations = new List<Vector2>();
+        TextDebug.text += "GetSpawnLoc started\n";
         if (OcclusionManager.TryAcquireEnvironmentDepthCpuImage(out XRCpuImage image))
         {
+            TextDebug.text += "GetSpawnLoc : If\n";
             using (image)
             {
                 // Use the texture.
@@ -93,14 +98,20 @@ public class SpawnLocManager : MonoBehaviour
                 }
             }
         }
+        else{
+            TextDebug.text += "GetSpawnLoc : Else\n";
+
+        }
         // info.text = locations.Count.ToString();
         return locations;
     }
 
-    private void SpawnMonster()
+    // private void SpawnMonster()
+    public Vector3 getSpawnPose()
     {
         List<Vector2> locations = GetSpawnLoc();
 
+        Vector3 E_FAIL = new Vector3(0,2,10);
         if (locations.Count != 0)
         {
             System.Random rand = new System.Random();
@@ -113,16 +124,24 @@ public class SpawnLocManager : MonoBehaviour
             if (raycastManager.Raycast(spawnLoc, hitsList, TrackableType.PlaneWithinPolygon))
             {
                 var h = hitsList[0].pose;
+                TextDebug.text += "GetSpawnPose Succeeded\n";
+                return h.position;
+                /*
                 Instantiate(spawnObj, h.position, h.rotation);
                 info.text = ("(" + h.position.x + ", " + h.position.y + "," + h.position.z + ")");
+                */
             }
             else
             {
-                info.text = (idx + ": " + spawnLoc.x + " " + spawnLoc.y);
+                // info.text = (idx + ": " + spawnLoc.x + " " + spawnLoc.y);
+                TextDebug.text += "GetSpawnPose Failed : raycast\n";
+                return E_FAIL;
             }
         }
-        //else
-            //info.text = "null";
+        else {         
+            TextDebug.text += "GetSpawnPose Failed : locCnt\n";
+            return E_FAIL;
+        }
     }
 
     private static Texture2D UpdateRawImage(RawImage rawImage, XRCpuImage cpuImage)
