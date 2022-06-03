@@ -18,6 +18,7 @@ public class MobXManager : MonoBehaviour
     public Text TextDebug;
 
     Vector3 spawnPos;
+    Vector3 NexusPosition;
 
     // Start is called before the first frame update
     void Start()
@@ -28,8 +29,8 @@ public class MobXManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        ARCamPos = arCamera.transform.position;
-
+        // ARCamPos = arCamera.transform.position;
+        
         if(MobX == null) // MobX terminated
         {
             MobXExist = false;
@@ -39,7 +40,7 @@ public class MobXManager : MonoBehaviour
             runTime += Time.deltaTime;
             if(runTime < duration)
             {
-                MobX.transform.position = Vector3.Lerp(spawnPos , ARCamPos, runTime / duration);
+                MobX.transform.position = Vector3.Lerp(spawnPos , NexusPosition, runTime / duration);
             }
             else
             {
@@ -54,15 +55,10 @@ public class MobXManager : MonoBehaviour
         runTime = 0.0f;
         duration = 10.0f;
         spawnPos = _spawnPos;
-        
+        NexusPosition = SpawnController.GetComponent<CreateNexus>().NexusPosition;
+
         MobX = Instantiate(MobXfab, spawnPos, Quaternion.Euler(new Vector3(0,180,0)));
         SpawnController.GetComponent<SpawnManager>().FieldMobCnt++;
         MobXExist = true;
-    }
-
-    // temporary position getter
-    Vector3 getTmpPos()
-    {
-        return new Vector3(0,2,10);
     }
 }

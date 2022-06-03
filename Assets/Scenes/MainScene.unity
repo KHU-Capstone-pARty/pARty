@@ -312,7 +312,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &166649847
 RectTransform:
   m_ObjectHideFlags: 0
@@ -329,7 +329,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 103.306335, y: 362.60425}
+  m_AnchoredPosition: {x: 0, y: 160}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &166649848
@@ -344,8 +344,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Material: {fileID: 2100000, guid: 503d84e353ab64d48af28b821c1225ff, type: 2}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -382,7 +382,6 @@ GameObject:
   - component: {fileID: 318259811}
   - component: {fileID: 318259817}
   - component: {fileID: 318259816}
-  - component: {fileID: 318259815}
   m_Layer: 0
   m_Name: AR Camera
   m_TagString: MainCamera
@@ -490,20 +489,6 @@ Transform:
   m_Father: {fileID: 1855869987}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &318259815
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 318259809}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e1760703bbd54c04488a8d10600262ab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_PlanePrefab: {fileID: 2975448914998123692, guid: c4b683cffb2798d4ca396980448258fa, type: 3}
-  m_DetectionMode: 2
 --- !u!114 &318259816
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -793,6 +778,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e45692231148bb49a1f980fa366c6ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SpawnController: {fileID: 1930073153}
   m_ThrowForce: 100
   m_ThrowDirectionX: 0.17
   m_ThrowDirectionY: 0.67
@@ -1314,6 +1300,7 @@ GameObject:
   - component: {fileID: 1855869987}
   - component: {fileID: 1855869986}
   - component: {fileID: 1855869988}
+  - component: {fileID: 1855869989}
   m_Layer: 0
   m_Name: AR Session Origin
   m_TagString: Untagged
@@ -1363,8 +1350,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HumanSegmentationStencilMode: 0
   m_HumanSegmentationDepthMode: 0
-  m_EnvironmentDepthMode: 2
+  m_EnvironmentDepthMode: 3
   m_OcclusionPreferenceMode: 0
+--- !u!114 &1855869989
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1855869985}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1760703bbd54c04488a8d10600262ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PlanePrefab: {fileID: 2975448914998123692, guid: c4b683cffb2798d4ca396980448258fa, type: 3}
+  m_DetectionMode: 1
 --- !u!1 &1930073153
 GameObject:
   m_ObjectHideFlags: 0
@@ -1378,6 +1379,7 @@ GameObject:
   - component: {fileID: 1930073157}
   - component: {fileID: 1930073156}
   - component: {fileID: 1930073158}
+  - component: {fileID: 1930073159}
   m_Layer: 0
   m_Name: SpawnController
   m_TagString: Untagged
@@ -1470,3 +1472,20 @@ MonoBehaviour:
   arCamera: {fileID: 318259809}
   SpawnController: {fileID: 1930073153}
   MobYExist: 0
+--- !u!114 &1930073159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1930073153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72041b7b44e7abf41ad8c32ffa82e1bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  raycastManager: {fileID: 318259816}
+  NexusExists: 0
+  NexusPrefab: {fileID: 3374583691006080098, guid: c4662b26c8cd98f478303983c0ac711b, type: 3}
+  NexusPosition: {x: 0, y: 0, z: 0}
+  TextDebug: {fileID: 139718327}

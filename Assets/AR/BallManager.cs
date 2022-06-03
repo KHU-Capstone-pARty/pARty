@@ -6,6 +6,9 @@ using UnityEngine.XR.ARFoundation;
 [RequireComponent(typeof(Rigidbody))]
 public class BallManager : MonoBehaviour
 {
+	[SerializeField]
+	public GameObject m_SpawnController;
+
 	// This is the force of the throw
 	public float m_ThrowForce = 100f;
 
@@ -36,6 +39,7 @@ public class BallManager : MonoBehaviour
 	private void Start(){
 		rb = gameObject.GetComponent<Rigidbody>();
 		m_SessionOrigin = GameObject.Find("AR Session Origin").GetComponent<ARSessionOrigin>();
+		m_SpawnController = GameObject.Find("SpawnController");
 		ARCam = m_SessionOrigin.transform.Find("AR Camera").gameObject;
 		transform.parent = ARCam.transform;
 		ResetBall();
@@ -78,13 +82,15 @@ public class BallManager : MonoBehaviour
 			directionChosen = false;
 		}
 
-		// 4 seconds after throwing the ball, we reset it's position
-		if(Time.time - endTime >= 4 && Time.time - endTime <= 5)
+		// 5 seconds after throwing the ball, we reset it's position
+		if(Time.time - endTime >= 5 && Time.time - endTime <= 6)
 			ResetBall();
-
 	}
 
 	public void ResetBall(){
+		            
+		if(!m_SpawnController.GetComponent<CreateNexus>().NexusExists)
+			return;
 		rb.mass = 0;
 		rb.useGravity = false;
 		rb.velocity = Vector3.zero;

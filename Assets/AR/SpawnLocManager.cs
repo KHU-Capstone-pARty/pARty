@@ -111,7 +111,7 @@ public class SpawnLocManager : MonoBehaviour
     {
         List<Vector2> locations = GetSpawnLoc();
 
-        Vector3 E_FAIL = new Vector3(0,2,10);
+        Vector3 E_FAIL = new Vector3(0,2,16);
         if (locations.Count != 0)
         {
             System.Random rand = new System.Random();

@@ -21,7 +21,11 @@ public class SpawnManager : MonoBehaviour
     float MobXSpawnTime; // initial spawn time
     float MobYSpawnTime;
 
+    Vector3 NexusPosition;
+    bool NexusExists;
+
     public Text TextDebug;
+    public Text TextMsg;
 
     // Start is called before the first frame update
     void Start()
@@ -45,34 +49,39 @@ public class SpawnManager : MonoBehaviour
     {
         runTime += Time.deltaTime;
         // Debug.Log(runTime);
-        CheckMobExist();
-
-        if(CurrMobCnt >= ObjectiveMobCnt)
+        CheckNexusExist();
+        if(NexusExists)
         {
-            //Game End
+            CheckMobExist();
 
-        }
-        else
-        {
-            Vector3 spawnPose = SpawnController.GetComponent<SpawnLocManager>().getSpawnPose();
-            spawnPose.z = 10.0f; // 플레이어와의 일정 거리를 위해 z축 고정
-            if(spawnPose != new Vector3(0,2,10))
+            if(CurrMobCnt >= ObjectiveMobCnt)
             {
-                TextDebug.text += "spawnPose : " + spawnPose + "\n";
-                if(MobXExist == false)
+                //Game End - TODO
+            }
+            else
+            {
+                Vector3 spawnPose = SpawnController.GetComponent<SpawnLocManager>().getSpawnPose();
+                spawnPose.z = 16.0f; // 플레이어와의 일정 거리를 위해 z축 고정
+                // if(spawnPose.y > arCam.transform.position.y + 0.5f)  -- TODO
+                    
+                if(spawnPose != new Vector3(0,2,16))
                 {
-                    if(runTime > MobXSpawnTime)
+                    TextDebug.text += "spawnPose : " + spawnPose + "\n";
+                    if(MobXExist == false)
                     {
-                        SpawnController.GetComponent<MobXManager>().SpawnMobX(spawnPose); // spawn MobX
-                        MobXSpawnTime = runTime + MobXCycle;
+                        if(runTime > MobXSpawnTime)
+                        {
+                            SpawnController.GetComponent<MobXManager>().SpawnMobX(spawnPose); // spawn MobX
+                            MobXSpawnTime = runTime + MobXCycle;
+                        }
                     }
-                }
-                if(MobYExist == false)
-                {
-                    if(runTime > MobYSpawnTime)
+                    if(MobYExist == false)
                     {
-                        SpawnController.GetComponent<MobYManager>().SpawnMobY(spawnPose); // spawn MobX
-                        MobYSpawnTime = runTime + MobYCycle;
+                        if(runTime > MobYSpawnTime)
+                        {
+                            SpawnController.GetComponent<MobYManager>().SpawnMobY(spawnPose); // spawn MobX
+                            MobYSpawnTime = runTime + MobYCycle;
+                        }
                     }
                 }
             }
@@ -83,5 +92,19 @@ public class SpawnManager : MonoBehaviour
     {
         MobXExist = SpawnController.GetComponent<MobXManager>().MobXExist;
         MobYExist = SpawnController.GetComponent<MobYManager>().MobYExist;
+    }
+
+    void CheckNexusExist()
+    {
+        NexusExists = SpawnController.GetComponent<CreateNexus>().NexusExists;
+    }
+
+    void GetNexusPosition()
+    {
+        if(NexusExists)
+        {
+            NexusPosition = SpawnController.GetComponent<CreateNexus>().NexusPosition;
+            TextDebug.text += "Get Nexus Pos : " + NexusPosition + "\n";
+        }
     }
 }
