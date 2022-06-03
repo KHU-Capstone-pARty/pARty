@@ -18,6 +18,8 @@ public class MobYManager : MonoBehaviour
     Vector3 spawnPos;
     Vector3 NexusPosition;
 
+    public Text TextDebug2;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -42,6 +44,8 @@ public class MobYManager : MonoBehaviour
             }
             else
             {
+                SpawnController.GetComponent<SpawnManager>().CurrHP--;
+                TextDebug2.text = "Nexus got attacked by MobY";
                 Destroy(MobY);
             }
         }

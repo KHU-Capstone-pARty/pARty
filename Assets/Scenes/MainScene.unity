@@ -325,7 +325,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1683554569}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -382,6 +382,7 @@ GameObject:
   - component: {fileID: 318259811}
   - component: {fileID: 318259817}
   - component: {fileID: 318259816}
+  - component: {fileID: 318259815}
   m_Layer: 0
   m_Name: AR Camera
   m_TagString: MainCamera
@@ -489,6 +490,22 @@ Transform:
   m_Father: {fileID: 1855869987}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &318259815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 318259809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b15f82cc229284894964d2d30806969d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HumanSegmentationStencilMode: 0
+  m_HumanSegmentationDepthMode: 0
+  m_EnvironmentDepthMode: 3
+  m_OcclusionPreferenceMode: 0
 --- !u!114 &318259816
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -761,7 +778,7 @@ Rigidbody:
   m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0.05
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
@@ -785,6 +802,85 @@ MonoBehaviour:
   m_BallCameraOffset: {x: 0, y: -1.4, z: 3}
   ARCam: {fileID: 0}
   m_SessionOrigin: {fileID: 0}
+--- !u!1 &1381548431
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1381548432}
+  - component: {fileID: 1381548434}
+  - component: {fileID: 1381548433}
+  m_Layer: 5
+  m_Name: Text_Debug2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1381548432
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1381548431}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1683554569}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -2, y: 327}
+  m_SizeDelta: {x: 540, y: 180}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1381548433
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1381548431}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 42
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 1
+    m_MaxSize: 56
+    m_Alignment: 3
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: 
+--- !u!222 &1381548434
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1381548431}
+  m_CullTransparentMesh: 1
 --- !u!1 &1466079580
 GameObject:
   m_ObjectHideFlags: 0
@@ -1186,6 +1282,7 @@ RectTransform:
   - {fileID: 1788025359}
   - {fileID: 1471641531}
   - {fileID: 139718325}
+  - {fileID: 1381548432}
   - {fileID: 166649847}
   m_Father: {fileID: 0}
   m_RootOrder: 5
@@ -1365,7 +1462,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_PlanePrefab: {fileID: 2975448914998123692, guid: c4b683cffb2798d4ca396980448258fa, type: 3}
-  m_DetectionMode: 1
+  m_DetectionMode: 2
 --- !u!1 &1930073153
 GameObject:
   m_ObjectHideFlags: 0
@@ -1456,6 +1553,7 @@ MonoBehaviour:
   MobXExist: 0
   MobYExist: 0
   TextDebug: {fileID: 139718327}
+  TextMsg: {fileID: 0}
 --- !u!114 &1930073158
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1489,3 +1587,4 @@ MonoBehaviour:
   NexusPrefab: {fileID: 3374583691006080098, guid: c4662b26c8cd98f478303983c0ac711b, type: 3}
   NexusPosition: {x: 0, y: 0, z: 0}
   TextDebug: {fileID: 139718327}
+  TextDebug2: {fileID: 1381548433}

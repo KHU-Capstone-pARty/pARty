@@ -64,6 +64,7 @@ public class BallManager : MonoBehaviour
 
 		// Direction was chosen, which will release/throw the ball
 		if (directionChosen) {
+			rb.isKinematic = false;
 			rb.mass = 1;
 			rb.useGravity = true;
 
@@ -87,10 +88,11 @@ public class BallManager : MonoBehaviour
 			ResetBall();
 	}
 
-	public void ResetBall(){
-		            
+	public void ResetBall()
+	{	            
 		if(!m_SpawnController.GetComponent<CreateNexus>().NexusExists)
 			return;
+		rb.isKinematic = true;
 		rb.mass = 0;
 		rb.useGravity = false;
 		rb.velocity = Vector3.zero;

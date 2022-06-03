@@ -24,6 +24,12 @@ public class SpawnManager : MonoBehaviour
     Vector3 NexusPosition;
     bool NexusExists;
 
+    [HideInInspector] 
+    public int MaxHP;
+    
+    [HideInInspector] 
+    public int CurrHP;
+
     public Text TextDebug;
     public Text TextMsg;
 
@@ -41,6 +47,9 @@ public class SpawnManager : MonoBehaviour
         MobYExist = false;
         MobYSpawnTime = 4.0f;
 
+        MaxHP = 5;
+        CurrHP = 5;
+
         TextDebug.text += "SPM started\n";
     }
 
@@ -54,17 +63,13 @@ public class SpawnManager : MonoBehaviour
         {
             CheckMobExist();
 
-            if(CurrMobCnt >= ObjectiveMobCnt)
-            {
-                //Game End - TODO
-            }
-            else
+            if(!CheckGameStatus()) // If game is running
             {
                 Vector3 spawnPose = SpawnController.GetComponent<SpawnLocManager>().getSpawnPose();
                 spawnPose.z = 16.0f; // 플레이어와의 일정 거리를 위해 z축 고정
                 // if(spawnPose.y > arCam.transform.position.y + 0.5f)  -- TODO
                     
-                if(spawnPose != new Vector3(0,2,16))
+                if(spawnPose != new Vector3(0,2,16)) // SpawnLocManager에서 location 받지 못한 경우 디폴트 위치값 (E_FAIL)
                 {
                     TextDebug.text += "spawnPose : " + spawnPose + "\n";
                     if(MobXExist == false)
@@ -86,6 +91,22 @@ public class SpawnManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    bool CheckGameStatus() // If game ended, return false.
+    {
+        if(CurrMobCnt >= ObjectiveMobCnt)
+        {
+            TextMsg.text = "Defeated all enemies. Game finished!\n You Win.";
+            return false;
+        }
+        else if(CurrHP <= 0)
+        {
+            TextMsg.text = "Nexus has destroyed. Game finished!\n You Lose.";
+            return false;
+        }
+        else
+            return true;
     }
 
     void CheckMobExist()

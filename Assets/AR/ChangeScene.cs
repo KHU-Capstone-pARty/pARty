@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class testfunct : MonoBehaviour
+public class ChangeScene : MonoBehaviour
 {
     public Button btn;
 

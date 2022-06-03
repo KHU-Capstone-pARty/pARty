@@ -15,10 +15,11 @@ public class MobXManager : MonoBehaviour
     float duration;
     public GameObject SpawnController;
     public bool MobXExist;
-    public Text TextDebug;
 
     Vector3 spawnPos;
     Vector3 NexusPosition;
+
+    public Text TextDebug2;
 
     // Start is called before the first frame update
     void Start()
@@ -44,6 +45,8 @@ public class MobXManager : MonoBehaviour
             }
             else
             {
+                SpawnController.GetComponent<SpawnManager>().CurrHP--;
+                TextDebug2.text = "Nexus got attacked by MobX";
                 Destroy(MobX);
             }
         }
