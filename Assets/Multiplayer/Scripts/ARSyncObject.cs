@@ -23,7 +23,7 @@ public class ARSyncObject : NetworkBehaviour
 
     void Update()
     {
-        TestMoveFunction();
+        //TestMoveFunction();
     }
 
     private void OnEnable()
@@ -73,5 +73,12 @@ public class ARSyncObject : NetworkBehaviour
         if (!IsServer) return;
 
         Position.Value += new Vector3(0f,0f,0.01f);
+    }
+
+    public void RelativeMove(Vector3 relativePos)
+    {
+        if (!IsServer) return;
+
+        Position.Value = relativePos;
     }
 }
