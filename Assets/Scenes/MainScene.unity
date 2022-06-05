@@ -193,7 +193,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Your HP : 2 / 3'
+  m_Text: 
 --- !u!222 &74689196
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -497,7 +497,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 318259809}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b15f82cc229284894964d2d30806969d, type: 3}
   m_Name: 
@@ -988,7 +988,7 @@ GameObject:
   - component: {fileID: 1471641533}
   - component: {fileID: 1471641532}
   m_Layer: 5
-  m_Name: TestButton
+  m_Name: Button_SceneChange
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1130,10 +1130,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1536910370}
-  - component: {fileID: 1536910369}
   - component: {fileID: 1536910368}
   m_Layer: 0
-  m_Name: EventSystem
+  m_Name: TextController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1148,31 +1147,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1536910367}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
+  m_Script: {fileID: 11500000, guid: 4593fac806bad224981a632703723f76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_HorizontalAxis: Horizontal
-  m_VerticalAxis: Vertical
-  m_SubmitButton: Submit
-  m_CancelButton: Cancel
-  m_InputActionsPerSecond: 10
-  m_RepeatDelay: 0.5
-  m_ForceModuleActive: 0
---- !u!114 &1536910369
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1536910367}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_FirstSelected: {fileID: 0}
-  m_sendNavigationEvents: 1
-  m_DragThreshold: 10
+  TextMsg: {fileID: 1788025360}
+  TextHP: {fileID: 74689195}
+  SpawnController: {fileID: 1930073153}
 --- !u!4 &1536910370
 Transform:
   m_ObjectHideFlags: 0
@@ -1303,7 +1283,6 @@ GameObject:
   - component: {fileID: 1788025359}
   - component: {fileID: 1788025361}
   - component: {fileID: 1788025360}
-  - component: {fileID: 1788025362}
   m_Layer: 5
   m_Name: Text_Msg
   m_TagString: Untagged
@@ -1372,20 +1351,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1788025358}
   m_CullTransparentMesh: 1
---- !u!114 &1788025362
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1788025358}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4593fac806bad224981a632703723f76, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TextMsg: {fileID: 1788025360}
-  SpawnController: {fileID: 1930073153}
 --- !u!1 &1855869985
 GameObject:
   m_ObjectHideFlags: 0
@@ -1503,6 +1468,7 @@ MonoBehaviour:
   spawnObj: {fileID: 0}
   info: {fileID: 0}
   TextDebug: {fileID: 139718327}
+  TextDebug2: {fileID: 1381548433}
 --- !u!4 &1930073155
 Transform:
   m_ObjectHideFlags: 0
@@ -1533,7 +1499,7 @@ MonoBehaviour:
   arCamera: {fileID: 318259809}
   SpawnController: {fileID: 1930073153}
   MobXExist: 0
-  TextDebug: {fileID: 0}
+  TextDebug2: {fileID: 1381548433}
 --- !u!114 &1930073157
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1550,10 +1516,15 @@ MonoBehaviour:
   CurrMobCnt: 0
   ObjectiveMobCnt: 0
   SpawnController: {fileID: 1930073153}
+  ARCam: {fileID: 318259809}
+  ARSessionOrigin: {fileID: 1855869986}
   MobXExist: 0
   MobYExist: 0
+  MaxHP: 0
+  CurrHP: 0
   TextDebug: {fileID: 139718327}
-  TextMsg: {fileID: 0}
+  TextDebug2: {fileID: 1381548433}
+  TextMsg: {fileID: 1788025360}
 --- !u!114 &1930073158
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1570,6 +1541,7 @@ MonoBehaviour:
   arCamera: {fileID: 318259809}
   SpawnController: {fileID: 1930073153}
   MobYExist: 0
+  TextDebug2: {fileID: 1381548433}
 --- !u!114 &1930073159
 MonoBehaviour:
   m_ObjectHideFlags: 0

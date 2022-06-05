@@ -60,7 +60,7 @@ public class MobXManager : MonoBehaviour
         spawnPos = _spawnPos;
         NexusPosition = SpawnController.GetComponent<CreateNexus>().NexusPosition;
 
-        MobX = Instantiate(MobXfab, spawnPos, Quaternion.Euler(new Vector3(0,180,0)));
+        MobX = Instantiate(MobXfab, spawnPos, Quaternion.LookRotation(spawnPos));
         SpawnController.GetComponent<SpawnManager>().FieldMobCnt++;
         MobXExist = true;
     }

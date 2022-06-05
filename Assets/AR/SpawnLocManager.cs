@@ -50,6 +50,7 @@ public class SpawnLocManager : MonoBehaviour
     private float currTime = 0;
 
     public Text TextDebug;
+    public Text TextDebug2;
 
     private void Start()
     {
@@ -83,6 +84,7 @@ public class SpawnLocManager : MonoBehaviour
                 tw = texture.width; th = texture.height;
                 sw = Screen.width; sh = Screen.height;
                 //info.text = tw + " " + th + ", " + sw + " " + sh;
+
                 for (int i = 3; i < tw; i += 3)
                 {
                     for (int j = 3; j < th; j += 3)
@@ -118,8 +120,10 @@ public class SpawnLocManager : MonoBehaviour
             int idx = rand.Next(locations.Count);
             Vector2 textureLoc = locations[idx];
             Vector2 spawnLoc = new Vector2(sw * (1 - textureLoc.y / th), textureLoc.x * (sh / tw));
+            TextDebug.text += "Tex Loc : " + textureLoc + " , Spawn Loc : " + spawnLoc + "\n";
             //info.text = (idx + ": " + spawnLoc.x + " " + spawnLoc.y);
-
+            
+            //return new Vector3(spawnLoc.x, spawnLoc.y, 16);
             List<ARRaycastHit> hitsList = new List<ARRaycastHit>();
             if (raycastManager.Raycast(spawnLoc, hitsList, TrackableType.PlaneWithinPolygon))
             {
