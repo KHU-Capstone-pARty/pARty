@@ -81,4 +81,11 @@ public class ARSyncObject : NetworkBehaviour
 
         Position.Value = relativePos;
     }
+
+    public void RelativeRotate(Quaternion relativeRot)
+    {
+        if (!IsServer) return;
+
+        Rotation.Value = relativeRot;
+    }
 }

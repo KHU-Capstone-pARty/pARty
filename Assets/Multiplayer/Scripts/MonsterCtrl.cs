@@ -42,11 +42,16 @@ public class MonsterCtrl : MonoBehaviour
 
         dir = dir.normalized * 0.001f;
 
-        Pose worldPose = new Pose(transform.position + dir * moveSpeed, Quaternion.identity);
+        if (!CloudAnchorMgr.Singleton.NetworkManager.IsServer) return;
+
+        var targetPosition = transform.position + dir * moveSpeed;
+        transform.LookAt(targetPosition);
+
+        Pose worldPose = new Pose(targetPosition, transform.rotation);
         var relativePose = CloudAnchorMgr.Singleton.GetRelativePose(worldPose);
 
-        transform.LookAt(worldPose.position);
         syncObject.RelativeMove(relativePose.position);
+        syncObject.RelativeRotate(relativePose.rotation);
     }
 
     private void SetState(MonsterState s)
