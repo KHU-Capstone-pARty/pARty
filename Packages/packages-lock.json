@@ -95,7 +95,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.netcode.gameobjects": {
-      "version": "file:../com.unity.netcode.gameobjects/com.unity.netcode.gameobjects",
+      "version": "file:C:/Users/PC/Documents/GitHub/com.unity.netcode.gameobjects/com.unity.netcode.gameobjects",
       "depth": 0,
       "source": "local",
       "dependencies": {
