@@ -18,6 +18,11 @@ public enum AnchorResolvingPhase
     nothingToResolve, readyToResolve, resolveInProgress, success, fail
 }
 
+public enum ARSyncObjectID
+{
+    testObj = 0, testMonster = 1,
+}
+
 public class CloudAnchorMgr : NetworkBehaviour
 {
     public static CloudAnchorMgr Singleton;
@@ -34,7 +39,9 @@ public class CloudAnchorMgr : NetworkBehaviour
     private bool isStartEstimate = false;
     private GameObject cloudAnchorObj;
     private bool isPlacingTestObj = false;
+    private bool isPlacingMonster = false;
     private PlayerPrefabRef playerRef;
+    private bool debugTextActive = true;
 
     private void Awake()
     {
@@ -57,6 +64,7 @@ public class CloudAnchorMgr : NetworkBehaviour
         playerRef.hostAnchorButton.onClick.AddListener(HostAnchor);
         playerRef.resolveAnchorButton.onClick.AddListener(ResolveAnchor);
         playerRef.placeTestObjToggle.onValueChanged.AddListener((b)=>{isPlacingTestObj = !isPlacingTestObj;});
+        playerRef.placeMonster.onValueChanged.AddListener((b)=>{isPlacingMonster = !isPlacingMonster;});
     }
 
     // Update is called once per frame
@@ -76,9 +84,20 @@ public class CloudAnchorMgr : NetworkBehaviour
         
         if (EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId)) return;
 
-        if (anchorToHost != null && !isPlacingTestObj)
+        if (anchorToHost != null && !isPlacingTestObj && !isPlacingMonster)
         {
             playerRef.text_log.text = "Anchor already exists\n" + playerRef.text_log.text;
+            return;
+        }
+        else if (isPlacingMonster)
+        {
+            if (playerRef.raycastManager.Raycast(touch.position,hits,TrackableType.PlaneWithinPolygon))
+            {
+                var hitPose = hits[0].pose;
+                var relPose = GetRelativePose(hitPose);
+                SpawnARSyncObject(((int)ARSyncObjectID.testMonster), relPose.position, relPose.rotation);
+            }
+
             return;
         }
         else if (isPlacingTestObj)
@@ -87,7 +106,7 @@ public class CloudAnchorMgr : NetworkBehaviour
             {
                 var hitPose = hits[0].pose;
                 var relPose = GetRelativePose(hitPose);
-                SpawnARSyncObject(0, relPose.position, relPose.rotation);
+                SpawnARSyncObject(((int)ARSyncObjectID.testObj), relPose.position, relPose.rotation);
             }
 
             return;
@@ -327,5 +346,12 @@ public class CloudAnchorMgr : NetworkBehaviour
             DebugLog("Spawn AR Sync Object: call server rpc");
             SpawnObjServerRpc(objNum, relPos, relRot, NetworkManager.Singleton.LocalClientId);
         }
+    }
+
+    public void ToggleDebugText()
+    {
+        debugTextActive = !debugTextActive;
+        playerRef.text_log.gameObject.SetActive(debugTextActive);
+        playerRef.text_State.gameObject.SetActive(debugTextActive);
     }
 }
