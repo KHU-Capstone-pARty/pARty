@@ -8,23 +8,23 @@ public class GameMenu : MonoBehaviour
     [SerializeField]
     private GameObject gameRule;
 
-    // J : ½ÃÀÛÇÏ±â ¹öÆ° onclick
+    // J : ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½Æ° onclick
     public void SelectStart()
     {
-        SceneManager.LoadScene("MultiTestScene"); // J : scene ÀÌµ¿
+        SceneManager.LoadScene("MainScene"); // J : scene ï¿½Ìµï¿½
     }
 
-    // J : °ÔÀÓ¹æ¹ý ¹öÆ° onclick
+    // J : ï¿½ï¿½ï¿½Ó¹ï¿½ï¿½ ï¿½ï¿½Æ° onclick
     public void SelectRule()
     {
-        Debug.Log("°ÔÀÓ¹æ¹ý");
+        Debug.Log("ï¿½ï¿½ï¿½Ó¹ï¿½ï¿½");
         gameRule.SetActive(true);
     }
 
-    // J : °ÔÀÓ¹æ¹ý ³ª°¡±â ¹öÆ° onclick
+    // J : ï¿½ï¿½ï¿½Ó¹ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ° onclick
     public void SelectRuleQuit()
     {
-        Debug.Log("°ÔÀÓ¹æ¹ý ³ª°¡±â");
-        gameRule.SetActive(false);  // J : °ÔÀÓ¹æ¹ýÃ¢ ºñÈ°¼ºÈ­
+        Debug.Log("ï¿½ï¿½ï¿½Ó¹ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
+        gameRule.SetActive(false);  // J : ï¿½ï¿½ï¿½Ó¹ï¿½ï¿½Ã¢ ï¿½ï¿½È°ï¿½ï¿½È­
     }
 }

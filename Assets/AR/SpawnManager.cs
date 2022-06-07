@@ -7,14 +7,24 @@ using UnityEngine.XR.ARSubsystems;
 
 public class SpawnManager : MonoBehaviour
 {
+    [HideInInspector] 
     public int FieldMobCnt; // Number of mobs in field
+    [HideInInspector] 
     public int CurrMobCnt; // Number of mobs terminated
+    [HideInInspector] 
     public int ObjectiveMobCnt; // Number of mobs to terminate
 
     public GameObject SpawnController;
     public GameObject ARCam;
 
+    public GameObject MobX;
+    GameObject MobXfab;
+    public GameObject MobY;
+    GameObject MobYfab;
+    
+    [HideInInspector] 
     public bool MobXExist; // If MobX exists, set true
+    [HideInInspector] 
     public bool MobYExist; 
 
     float runTime;
@@ -33,7 +43,6 @@ public class SpawnManager : MonoBehaviour
     public int CurrHP;
 
     public Text TextDebug;
-    public Text TextDebug2;
     public Text TextMsg;
 
     // Start is called before the first frame update
@@ -42,13 +51,13 @@ public class SpawnManager : MonoBehaviour
         CurrMobCnt = 0;
         ObjectiveMobCnt = 16;
 
-        MobXCycle = 10;
+        MobXCycle = 11;
         MobXExist = false;
-        MobXSpawnTime = 0.0f;
+        MobXSpawnTime = 5.0f;
 
-        MobYCycle = 16;
+        MobYCycle = 17;
         MobYExist = false;
-        MobYSpawnTime = 4.0f;
+        MobYSpawnTime = 8.0f;
 
         MaxHP = 5;
         CurrHP = 5;
@@ -59,31 +68,27 @@ public class SpawnManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        runTime += Time.deltaTime;
-        // Debug.Log(runTime);
         CheckNexusExist();
         if(NexusExists)
-        {
+        {    
+            runTime += Time.deltaTime;
             CheckMobExist();
 
             if(CheckGameStatus()) // If game is running
             {
                 Vector3 spawnPose = SpawnController.GetComponent<SpawnLocManager>().getSpawnPose();
-                TextDebug.text += "SpawnPose : " + spawnPose + ", arcam:" +  ARCam.transform.position + "\n";
+                
                 spawnPose.z = 16.0f; // 플레이어와의 일정 거리를 위해 z축 고정
                 spawnPose = ARCam.transform.rotation * (spawnPose - ARCam.transform.position);
-
-                // if(spawnPose.y > arCam.transform.position.y + 0.5f)  -- TODO
                     
                 if(spawnPose != new Vector3(0,2,16)) // SpawnLocManager에서 location 받지 못한 경우 디폴트 위치값 (E_FAIL)
                 {
-                    // ARSessionOrigin.MakeContentAppearAt(ARSessionOrigin.transform, ARCam.transform.position, ARCam.transform.rotation);
                     if(MobXExist == false)
                     {
                         if(runTime > MobXSpawnTime)
                         {
-                            TextDebug2.text = "MobX spawned at : " + spawnPose;
-                            SpawnController.GetComponent<MobXManager>().SpawnMobX(spawnPose); // spawn MobX
+                            SpawnMobX(spawnPose);
+                            SpawnController.GetComponent<SpawnManager>().FieldMobCnt++;
                             MobXSpawnTime = runTime + MobXCycle;
                         }
                     }
@@ -91,8 +96,9 @@ public class SpawnManager : MonoBehaviour
                     {
                         if(runTime > MobYSpawnTime)
                         {
-                            TextDebug2.text = "MobY spawned at : " + spawnPose;
-                            SpawnController.GetComponent<MobYManager>().SpawnMobY(spawnPose); // spawn MobY
+                            SpawnMobY(spawnPose);
+                            spawnPose.y += 0.5f;
+                            SpawnController.GetComponent<SpawnManager>().FieldMobCnt++;
                             MobYSpawnTime = runTime + MobYCycle;
                         }
                     }
@@ -105,12 +111,12 @@ public class SpawnManager : MonoBehaviour
     {
         if(CurrMobCnt >= ObjectiveMobCnt)
         {
-            TextMsg.text = "Defeated all enemies.\n Game finished!\n You Win.";
+            TextMsg.text = "Defeated all enemies.\n You Win!!";
             return false;
         }
         else if(CurrHP <= 0)
         {
-            TextMsg.text = "Nexus has been destroyed.\n Game finished!\n You Lose.";
+            TextMsg.text = "Nexus has been destroyed.\n You Lose...";
             return false;
         }
         else
@@ -119,8 +125,14 @@ public class SpawnManager : MonoBehaviour
 
     void CheckMobExist()
     {
-        MobXExist = SpawnController.GetComponent<MobXManager>().MobXExist;
-        MobYExist = SpawnController.GetComponent<MobYManager>().MobYExist;
+        if(MobXfab == null)
+            MobXExist = false;
+        else
+            MobXExist = true;
+        if(MobYfab == null)
+            MobYExist = false;
+        else
+            MobYExist = true;
     }
 
     void CheckNexusExist()
@@ -136,4 +148,23 @@ public class SpawnManager : MonoBehaviour
             TextDebug.text += "Get Nexus Pos : " + NexusPosition + "\n";
         }
     }
+
+    void SpawnMobX(Vector3 _spawnPos)
+    {
+        MobXfab = Instantiate(MobX, _spawnPos, Quaternion.LookRotation(_spawnPos) * Quaternion.Euler(new Vector3(0,180,0)));
+        MobXfab.GetComponent<MobXManager>().spawnPos = _spawnPos;
+        MobXfab.GetComponent<MobXManager>().NexusPosition = SpawnController.GetComponent<CreateNexus>().NexusPosition;
+        MobXfab.GetComponent<MobXManager>().TextMsg = TextMsg;
+        TextMsg.text = "Monster X has spawned.";
+    }
+
+    void SpawnMobY(Vector3 _spawnPos)
+    {
+        MobYfab = Instantiate(MobY, _spawnPos, Quaternion.LookRotation(_spawnPos) * Quaternion.Euler(new Vector3(0,180,0)));
+        MobYfab.GetComponent<MobYManager>().spawnPos = _spawnPos;
+        MobYfab.GetComponent<MobYManager>().NexusPosition = SpawnController.GetComponent<CreateNexus>().NexusPosition;
+        MobYfab.GetComponent<MobYManager>().TextMsg = TextMsg;
+        TextMsg.text = "Monster Y has spawned.";
+    }
 }
+

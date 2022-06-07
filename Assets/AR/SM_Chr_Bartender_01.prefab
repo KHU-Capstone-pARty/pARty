@@ -4210,6 +4210,7 @@ GameObject:
   m_Component:
   - component: {fileID: 269357172962902170}
   - component: {fileID: 269357172962902171}
+  - component: {fileID: 3430930779993904710}
   m_Layer: 0
   m_Name: SM_Chr_Bartender_01
   m_TagString: Untagged
@@ -4273,6 +4274,23 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &3430930779993904710
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 269357172962902244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e1342d0d6bd0d84390cef50a29fb0f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MobX: {fileID: 269357172962902244}
+  MobXExist: 0
+  arCamera: {fileID: 0}
+  SpawnController: {fileID: 0}
+  TextMsg: {fileID: 0}
 --- !u!1 &269357172963653961
 GameObject:
   m_ObjectHideFlags: 0

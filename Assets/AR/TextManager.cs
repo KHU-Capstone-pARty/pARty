@@ -5,8 +5,7 @@ using UnityEngine.UI;
 
 public class TextManager : MonoBehaviour
 {
-    public Text TextMsg;
-    public Text TextHP;
+    public Text TextMobCnt;
 
     public GameObject SpawnController;
     int CurrMobCnt;
@@ -15,10 +14,12 @@ public class TextManager : MonoBehaviour
     int MaxHP;
     int CurrHP;
 
+    public Sprite emptyHeartImg;
+    public Image[] Heart;
+
     // Start is called before the first frame update
     void Start()
     {
-        TextMsg.text = "";
     }
 
     // Update is called once per frame
@@ -26,10 +27,16 @@ public class TextManager : MonoBehaviour
     {
         CurrMobCnt = SpawnController.GetComponent<SpawnManager>().CurrMobCnt;
         ObjectiveMobCnt = SpawnController.GetComponent<SpawnManager>().ObjectiveMobCnt;
-        TextMsg.text = CurrMobCnt + " / " + ObjectiveMobCnt;
+        TextMobCnt.text = "<b>" + CurrMobCnt + " / " + ObjectiveMobCnt + "</b>";
         
         MaxHP = SpawnController.GetComponent<SpawnManager>().MaxHP;
         CurrHP = SpawnController.GetComponent<SpawnManager>().CurrHP;
-        TextHP.text = "Your HP : " + CurrHP + " / " + MaxHP;
+        UpdateHP();
+    }
+
+    void UpdateHP()
+    {
+        if(CurrHP < MaxHP)
+            Heart[4-CurrHP].sprite = emptyHeartImg;
     }
 }

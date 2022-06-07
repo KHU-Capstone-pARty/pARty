@@ -50,7 +50,6 @@ public class SpawnLocManager : MonoBehaviour
     private float currTime = 0;
 
     public Text TextDebug;
-    public Text TextDebug2;
 
     private void Start()
     {

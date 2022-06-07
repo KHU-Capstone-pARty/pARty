@@ -7,61 +7,44 @@ using UnityEngine.XR.ARSubsystems;
 
 public class MobXManager : MonoBehaviour
 {
-    public GameObject MobXfab;
-    GameObject MobX;
-    Vector3 ARCamPos;
-    public GameObject arCamera;
+    public GameObject MobX;
+
     float runTime;
     float duration;
+
+    [HideInInspector]
     public GameObject SpawnController;
-    public bool MobXExist;
 
-    Vector3 spawnPos;
-    Vector3 NexusPosition;
+    [HideInInspector]
+    public Vector3 spawnPos;
+    [HideInInspector]
+    public Vector3 NexusPosition;
 
-    public Text TextDebug2;
+    [HideInInspector]
+    public Text TextMsg;
 
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        MobXExist = false;
+        SpawnController = GameObject.Find("SpawnController");
+        TextMsg = GameObject.Find("Text_Msg").GetComponent<Text>();
+
+        runTime = 0.0f;
+        duration = 10.0f;
     }
 
     // Update is called once per frame
     void Update()
     {
-        // ARCamPos = arCamera.transform.position;
-        
-        if(MobX == null) // MobX terminated
+        runTime += Time.deltaTime;
+        if(runTime < duration)
         {
-            MobXExist = false;
+            MobX.transform.position = Vector3.Lerp(spawnPos, NexusPosition, runTime / duration);
         }
-        if(MobXExist) 
+        else // when Monster attacked nexus
         {
-            runTime += Time.deltaTime;
-            if(runTime < duration)
-            {
-                MobX.transform.position = Vector3.Lerp(spawnPos , NexusPosition, runTime / duration);
-            }
-            else
-            {
-                SpawnController.GetComponent<SpawnManager>().CurrHP--;
-                TextDebug2.text = "Nexus got attacked by MobX";
-                Destroy(MobX);
-            }
+            SpawnController.GetComponent<SpawnManager>().CurrHP--;
+            TextMsg.text = "Nexus got attacked!";
+            Destroy(MobX);
         }
-    }
-
-    // spawn MobX
-    public void SpawnMobX(Vector3 _spawnPos)
-    {
-        runTime = 0.0f;
-        duration = 10.0f;
-        spawnPos = _spawnPos;
-        NexusPosition = SpawnController.GetComponent<CreateNexus>().NexusPosition;
-
-        MobX = Instantiate(MobXfab, spawnPos, Quaternion.LookRotation(spawnPos));
-        SpawnController.GetComponent<SpawnManager>().FieldMobCnt++;
-        MobXExist = true;
     }
 }

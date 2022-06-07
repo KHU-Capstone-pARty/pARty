@@ -16,11 +16,11 @@ public class CreateNexus : MonoBehaviour
     public Vector3 NexusPosition;
 
     public Text TextDebug;
-    public Text TextDebug2;
+    public Text TextMsg;
 
     void Start()
     {
-        TextDebug2.text = "Please Set Nexus";
+        TextMsg.text = "Please set Nexus by touching plane.\n<size=36>(If setting not working, wait for second and try again.)</size>";
         TextDebug.text += "CreateNexus started\n";
         NexusExists = false;
     }
@@ -51,7 +51,7 @@ public class CreateNexus : MonoBehaviour
                 NexusExists = true;
                 NexusPosition = hitPose.position;
                 TextDebug.text += "CreateNexus Done\n";
-                TextDebug2.text = "Nexus set at "+ NexusPosition;
+                TextMsg.text = "Nexus created at "+ NexusPosition + ".\n Monsters will be spawned soon.";
             }
             return;
         }
