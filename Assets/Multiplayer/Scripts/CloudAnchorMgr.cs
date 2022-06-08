@@ -366,10 +366,28 @@ public class CloudAnchorMgr : NetworkBehaviour
     {
         DebugLog("Try Spawn Monster By Depth");
         var pos = playerRef.spawnLocManager.getSpawnPose();
-        var spawnPose = new Pose(pos, Quaternion.identity);
-        DebugLog($"Spawn Pos from depth {spawnPose}");
-        var relPose = GetRelativePose(spawnPose);
-        SpawnARSyncObject(((int)monsterId), relPose.position, relPose.rotation);
+        if (pos != Vector3.zero)
+        {
+            //성공시
+            var spawnPose = new Pose(pos, Quaternion.identity);
+            DebugLog($"Spawn Pos from depth {spawnPose}");
+            var relPose = GetRelativePose(spawnPose);
+            SpawnARSyncObject(((int)monsterId), new Vector3(relPose.position.x,0,relPose.position.z), relPose.rotation);
+        }
+        else
+        {
+            //실패시
+            float ranX = Random.Range(1f,3f);
+            float ranZ = Random.Range(1f,3f);
+            bool xMult = Random.Range(0,2) == 0;
+            bool zMult = Random.Range(0,2) == 0;
+            if (xMult) ranX *= -1f;
+            if (zMult) ranZ *= -1f;
+
+            var relPose = new Pose(new Vector3(ranX,0,ranZ),Quaternion.identity);
+            SpawnARSyncObject(((int)monsterId), relPose.position, relPose.rotation);
+        }
+        
     }
 
     public void SpawnMonsterOppositeSide(ARSyncObjectID monsterId)
@@ -378,8 +396,9 @@ public class CloudAnchorMgr : NetworkBehaviour
         Vector3 eulerAngle = new Vector3(Camera.main.transform.eulerAngles.x, Camera.main.transform.eulerAngles.y + 180, Camera.main.transform.eulerAngles.z);
         var pos = Quaternion.Euler(eulerAngle) * (new Vector3(Random.Range(2, 4), Random.Range(-2, 0), 16.0f) - Camera.main.transform.position);
         var spawnPose = new Pose(pos, Quaternion.identity);
-        DebugLog($"Spawn Pos from opposite side {spawnPose}");
         var relPose = GetRelativePose(spawnPose);
-        SpawnARSyncObject(((int)monsterId), relPose.position, relPose.rotation);
+        DebugLog($"Spawn Pos from opposite side Relative {relPose}");
+        float mult = Random.Range(1f,3f);
+        SpawnARSyncObject(((int)monsterId), relPose.position.normalized * mult, relPose.rotation);
     }
 }

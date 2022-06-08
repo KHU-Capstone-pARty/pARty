@@ -84,7 +84,9 @@ public class GameStatusMgr : NetworkBehaviour
     private void CheckSpawnTimer()
     {
         if (! CloudAnchorMgr.Singleton.isNexusExists) return;
-        
+        if (! CloudAnchorMgr.Singleton.NetworkManager.IsServer) return;
+        if (FieldMonsterCount.Value > MonsterGoal.Value) return;
+
         groundMonsterSpawnTimer += Time.deltaTime;
         fairyMonsterSpawnTimer += Time.deltaTime;
 
@@ -97,7 +99,7 @@ public class GameStatusMgr : NetworkBehaviour
         if (fairyMonsterSpawnTimer > fairyMonsterSpawnDelay)
         {
             fairyMonsterSpawnTimer = 0f;
-            CloudAnchorMgr.Singleton.SpawnMonsterOppositeSide(ARSyncObjectID.groundMonster);
+            CloudAnchorMgr.Singleton.SpawnMonsterOppositeSide(ARSyncObjectID.fairyMonster);
         }
     }
 

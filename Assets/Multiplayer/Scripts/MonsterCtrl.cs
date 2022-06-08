@@ -105,6 +105,7 @@ public class MonsterCtrl : NetworkBehaviour
     {
         if (collision.collider.gameObject.CompareTag("Ball"))
         {
+            CloudAnchorMgr.Singleton.DebugLog("충돌충돌충돌충돌충돌충돌");
             GetDamage(maxHP);
         }
     } 
