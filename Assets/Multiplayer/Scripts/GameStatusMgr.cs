@@ -40,6 +40,7 @@ public class GameStatusMgr : NetworkBehaviour
     private float groundMonsterSpawnTimer = 0f;
     private float fairyMonsterSpawnDelay = 6f;
     private float fairyMonsterSpawnTimer = 0f;
+    private bool isGameEnd = false;
 
 
     private void Awake()
@@ -82,6 +83,8 @@ public class GameStatusMgr : NetworkBehaviour
 
     private void CheckSpawnTimer()
     {
+        if (! CloudAnchorMgr.Singleton.isNexusExists) return;
+        
         groundMonsterSpawnTimer += Time.deltaTime;
         fairyMonsterSpawnTimer += Time.deltaTime;
 
@@ -102,7 +105,7 @@ public class GameStatusMgr : NetworkBehaviour
     {
         UIMgr.Singleton.selectHostClientPanel.SetActive(false);
         UIMgr.Singleton.anchorPanel.SetActive(true);
-        
+
         if (!CloudAnchorMgr.Singleton.NetworkManager.IsServer) return;
 
         CloudAnchorMgr.Singleton.DebugLog("Gamestatus manager spawned");
@@ -140,10 +143,14 @@ public class GameStatusMgr : NetworkBehaviour
     {
         if (currHP.Value <= 0)
         {
+            if (isGameEnd) return;
+            isGameEnd = true;
             CloudAnchorMgr.Singleton.DebugLog("플레이어 패배");
         }
         else if (MonsterKillCount.Value >= MonsterGoal.Value)
         {
+            if (isGameEnd) return;
+            isGameEnd = true;
             CloudAnchorMgr.Singleton.DebugLog("플레이어 승리");
             // Player Win
         }
