@@ -23,19 +23,19 @@ public class ARSyncObject : NetworkBehaviour
 
     void Update()
     {
-        
+        UpdatePose();
     }
 
     private void OnEnable()
     {
-        Position.OnValueChanged += OnPositionChanged;
-        Rotation.OnValueChanged += OnRotationChanged;
+        //Position.OnValueChanged += OnPositionChanged;
+        //Rotation.OnValueChanged += OnRotationChanged;
     }
 
     private void OnDisable() 
     {
-        Position.OnValueChanged -= OnPositionChanged;
-        Rotation.OnValueChanged -= OnRotationChanged;
+        //Position.OnValueChanged -= OnPositionChanged;
+        //Rotation.OnValueChanged -= OnRotationChanged;
     }
 
     public void Init()
@@ -49,6 +49,14 @@ public class ARSyncObject : NetworkBehaviour
 
         Position.Value = pose.position;
         Rotation.Value = pose.rotation;
+    }
+
+    private void UpdatePose()
+    {
+        Pose curPose = new Pose(Position.Value,Rotation.Value);
+        var worldPose = CloudAnchorMgr.Singleton.GetWorldPose(curPose);
+        transform.position = worldPose.position;
+        transform.rotation = worldPose.rotation;
     }
 
     private void OnPositionChanged(Vector3 pre, Vector3 cur)
