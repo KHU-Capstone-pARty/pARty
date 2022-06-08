@@ -7,6 +7,7 @@ TagManager:
   - CloudAnchorMgr
   - Ref
   - Ball
+  - UIMgr
   layers:
   - Default
   - TransparentFX

@@ -21,12 +21,15 @@ public class MonsterCtrl : NetworkBehaviour
         NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Server);
 
+    private bool isAttacked = false;
+
     private void Start()
     {
         syncObject = GetComponent<ARSyncObject>();
         attackTargetTransform = CloudAnchorMgr.Singleton.cloudAnchor.transform;
         animator = GetComponent<Animator>();
         CloudAnchorMgr.Singleton.DebugLog($"(상대위치) y값: {syncObject.Position.Value.y}");
+        GameStatusMgr.Singleton.MonsterSpawnAlert();
     }
 
     private void Update()
@@ -55,6 +58,9 @@ public class MonsterCtrl : NetworkBehaviour
         if (distance < 0.5f)
         {
             SetState(MonsterState.attack);
+            if (isAttacked) return;
+            GameStatusMgr.Singleton.NexusDamaged();
+            isAttacked = true;
             return;
         }
 
@@ -88,9 +94,9 @@ public class MonsterCtrl : NetworkBehaviour
 
     private void OnHPChanged(int pre, int cur)
     {
-        if (cur < 0)
+        if (cur <= 0)
         {
-            // game status manager에서 잡은 수 증가, 골드 추가
+            GameStatusMgr.Singleton.MonsterDieAlert();
             Destroy(this.gameObject);
         }
     }
@@ -99,7 +105,7 @@ public class MonsterCtrl : NetworkBehaviour
     {
         if (collision.collider.gameObject.CompareTag("Ball"))
         {
-            Destroy(this.gameObject);
+            GetDamage(maxHP);
         }
     } 
 }

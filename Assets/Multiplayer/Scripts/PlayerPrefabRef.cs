@@ -18,4 +18,5 @@ public class PlayerPrefabRef : MonoBehaviour
     public Toggle placeTestObjToggle;
     public Toggle placeMonster;
     public SpawnLocManager spawnLocManager;
+    public List<Image> hearts = new List<Image>();
 }

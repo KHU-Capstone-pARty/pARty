@@ -94,16 +94,23 @@ public class CloudAnchorMgr : NetworkBehaviour
         }
         else if (isPlacingMonster)
         {
-            var pos = playerRef.spawnLocManager.getSpawnPose();
-            var spawnPose = new Pose(pos, Quaternion.identity);
-            var relPose = GetRelativePose(spawnPose);
-            SpawnARSyncObject(((int)ARSyncObjectID.testMonster), relPose.position, relPose.rotation);
-            // if (playerRef.raycastManager.Raycast(touch.position,hits,TrackableType.PlaneWithinPolygon))
-            // {
-            //     var hitPose = hits[0].pose;
-            //     var relPose = GetRelativePose(hitPose);
-            //     SpawnARSyncObject(((int)ARSyncObjectID.testMonster), relPose.position, relPose.rotation);
-            // }
+
+            // Depth로 생성
+
+            // DebugLog("Placing Monster");
+            // var pos = playerRef.spawnLocManager.getSpawnPose();
+            // var spawnPose = new Pose(pos, Quaternion.identity);
+            // DebugLog($"Spawn Pos from depth {spawnPose}");
+            // var relPose = GetRelativePose(spawnPose);
+            // SpawnARSyncObject(((int)ARSyncObjectID.testMonster), relPose.position, relPose.rotation);
+
+            // 터치로 생성
+            if (playerRef.raycastManager.Raycast(touch.position,hits,TrackableType.PlaneWithinPolygon))
+            {
+                var hitPose = hits[0].pose;
+                var relPose = GetRelativePose(hitPose);
+                SpawnARSyncObject(((int)ARSyncObjectID.testMonster), relPose.position, relPose.rotation);
+            }
 
             return;
         }
@@ -266,6 +273,7 @@ public class CloudAnchorMgr : NetworkBehaviour
             cloudAnchorObj = Instantiate(playerRef.anchorPrefab,cloudAnchor.transform);
             playerRef.text_log.text = $"Successfully Resolved. Cloud anchor position: {pos}\n" + playerRef.text_log.text;
             isNexusExists = true;
+            UIMgr.Singleton.planeToggle.Toggle();
         }
         else if (state != CloudAnchorState.TaskInProgress)
         {

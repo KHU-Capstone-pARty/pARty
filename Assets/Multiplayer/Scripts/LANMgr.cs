@@ -16,11 +16,14 @@ public class LANMgr : MonoBehaviour
     public InputField inputF_IP;
     private string currentIP;
     public GameObject cloudAnchorMgrPrefab;
+    public GameObject gameStatusMgrPrefab;
 
     public void StartGame()
     {
         var cloudAnchorMgrObj = Instantiate(cloudAnchorMgrPrefab,Vector3.zero,Quaternion.identity);
         cloudAnchorMgrObj.GetComponent<NetworkObject>().Spawn();
+        var gameStatusMgrObj = Instantiate(gameStatusMgrPrefab, Vector3.zero,Quaternion.identity);
+        gameStatusMgrObj.GetComponent<NetworkObject>().Spawn();
     }
 
     public void StartHost()
@@ -35,6 +38,7 @@ public class LANMgr : MonoBehaviour
                 break;
             }
         }
+        UIMgr.Singleton.startGameButton.SetActive(true);
     }
 
     public void StartClient()
@@ -97,7 +101,15 @@ public class LANMgr : MonoBehaviour
             if (NetworkManager.Singleton.IsServer)
             {
                 status += $"IP: {currentIP}\n";
+                text_Status.text = currentIP;
                 status += "ConnectedClients: \n";
+                int clientCount = NetworkManager.Singleton.ConnectedClients.Count;
+
+                for (int i =1; i <= UIMgr.Singleton.userIcons.Count; i++)
+                {
+                    UIMgr.Singleton.userIcons[i-1].SetActive(i<=clientCount);
+                }
+
                 foreach (ulong uid in NetworkManager.Singleton.ConnectedClientsIds)
                 {
                     //status += $"{uid.ToString()}: {NetworkManager.Singleton.SpawnManager.GetPlayerNetworkObject(uid).transform.position}\n";
@@ -110,6 +122,6 @@ public class LANMgr : MonoBehaviour
             }
         }
 
-        text_Status.text = status;
+        //text_Status.text = status;
     }
 }

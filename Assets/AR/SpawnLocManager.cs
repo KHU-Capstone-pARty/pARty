@@ -70,9 +70,11 @@ public class SpawnLocManager : MonoBehaviour
     private List<Vector2> GetSpawnLoc()
     {
         List<Vector2> locations = new List<Vector2>();
+        CloudAnchorMgr.Singleton.DebugLog("Get Spawn Loc");
         
         if (OcclusionManager.TryAcquireEnvironmentDepthCpuImage(out XRCpuImage image))
         {
+            CloudAnchorMgr.Singleton.DebugLog("DepthCpuImage success");
             
             using (image)
             {
@@ -122,8 +124,10 @@ public class SpawnLocManager : MonoBehaviour
             
             //return new Vector3(spawnLoc.x, spawnLoc.y, 16);
             List<ARRaycastHit> hitsList = new List<ARRaycastHit>();
+            CloudAnchorMgr.Singleton.DebugLog("Try Raycast");
             if (raycastManager.Raycast(spawnLoc, hitsList, TrackableType.PlaneWithinPolygon))
             {
+                CloudAnchorMgr.Singleton.DebugLog("Raycast success");
                 var h = hitsList[0].pose;
                 
                 return h.position;
