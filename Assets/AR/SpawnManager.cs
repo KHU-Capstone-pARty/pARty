@@ -87,7 +87,8 @@ public class SpawnManager : MonoBehaviour
                     {
                         if(runTime > MobXSpawnTime)
                         {
-                            SpawnMobX(spawnPose);
+                            // 넥서스와 몬스터가 같은 y값을 가짐
+                            SpawnMobX(new Vector3(spawnPose.x, gameObject.GetComponent<CreateNexus>().NexusPosition.y, spawnPose.z));
                             SpawnController.GetComponent<SpawnManager>().FieldMobCnt++;
                             MobXSpawnTime = runTime + MobXCycle;
                         }
