@@ -607,6 +607,7 @@ GameObject:
   - component: {fileID: 67547980589545457}
   - component: {fileID: -9193410760231559209}
   - component: {fileID: -7758375309845919370}
+  - component: {fileID: 8511640271108536688}
   m_Layer: 0
   m_Name: FairyMonster
   m_TagString: Untagged
@@ -732,6 +733,20 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &8511640271108536688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1130955691468970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a6790a757e6b084992b83bbd24aa8ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HP:
+    m_InternalValue: 0
 --- !u!1 &1136545468639114
 GameObject:
   m_ObjectHideFlags: 0
