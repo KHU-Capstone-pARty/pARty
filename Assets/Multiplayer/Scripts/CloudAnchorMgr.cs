@@ -299,6 +299,7 @@ public class CloudAnchorMgr : NetworkBehaviour
     [ClientRpc]
     private void SpawnObjClientRpc(int objNum, Vector3 relPos, Quaternion relRot, ulong ownerId)
     {
+        DebugLog($"Receive SpawnObjClientRPC");
         if (!NetworkManager.IsServer) return;
         Pose relPose = new Pose(relPos, relRot);
         Pose worldPose = GetWorldPose(relPose);
@@ -310,7 +311,7 @@ public class CloudAnchorMgr : NetworkBehaviour
             DebugLog($"NetObj is null");
             return;
         }
-        netObj.SpawnWithOwnership(ownerId);
+        netObj.Spawn();
     }
 
     [ServerRpc(RequireOwnership=false)]
@@ -327,7 +328,7 @@ public class CloudAnchorMgr : NetworkBehaviour
             DebugLog($"NetObj is null");
             return;
         }
-        netObj.SpawnWithOwnership(ownerId);
+        netObj.Spawn();
     }
 
     public void DebugLog(string msg)

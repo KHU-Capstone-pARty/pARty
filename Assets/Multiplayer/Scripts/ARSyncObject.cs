@@ -10,13 +10,7 @@ public class ARSyncObject : NetworkBehaviour
         default,
         NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Server);
-
     public NetworkVariable<Quaternion> Rotation = new NetworkVariable<Quaternion>(
-        default,
-        NetworkVariableReadPermission.Everyone,
-        NetworkVariableWritePermission.Server);
-
-    public NetworkVariable<Pose> Pose = new NetworkVariable<Pose>(
         default,
         NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Server);
@@ -29,21 +23,19 @@ public class ARSyncObject : NetworkBehaviour
 
     void Update()
     {
-        //TestMoveFunction();
+        
     }
 
     private void OnEnable()
     {
-        // Position.OnValueChanged += OnPositionChanged;
-        // Rotation.OnValueChanged += OnRotationChanged;
-        Pose.OnValueChanged += OnPoseChanged;
+        Position.OnValueChanged += OnPositionChanged;
+        Rotation.OnValueChanged += OnRotationChanged;
     }
 
     private void OnDisable() 
     {
-        // Position.OnValueChanged -= OnPositionChanged;
-        // Rotation.OnValueChanged -= OnRotationChanged;
-        Pose.OnValueChanged -= OnPoseChanged;
+        Position.OnValueChanged -= OnPositionChanged;
+        Rotation.OnValueChanged -= OnRotationChanged;
     }
 
     public void Init()
@@ -61,45 +53,23 @@ public class ARSyncObject : NetworkBehaviour
 
     private void OnPositionChanged(Vector3 pre, Vector3 cur)
     {
-        var pose = new Pose(cur, Rotation.Value);
-        pose = CloudAnchorMgr.Singleton.GetWorldPose(pose);
-        transform.position = pose.position;
-        //CloudAnchorMgr.Singleton.DebugLog($"Position Changed {pre} -> {cur}");
-
+        Pose curPose = new Pose(cur, Rotation.Value);
+        var worldPose = CloudAnchorMgr.Singleton.GetWorldPose(curPose);
+        transform.position = worldPose.position;
     }
 
     private void OnRotationChanged(Quaternion pre, Quaternion cur)
     {
-        var pose = new Pose(Position.Value, cur);
-        pose = CloudAnchorMgr.Singleton.GetWorldPose(pose);
-        transform.rotation = pose.rotation;
-    }
-    
-    private void OnPoseChanged(Pose pre, Pose cur)
-    {
-        var worldPose = CloudAnchorMgr.Singleton.GetWorldPose(cur);
-        transform.position = worldPose.position;
-        transform.rotation =worldPose.rotation;
-    }
-
-    public void RelativeMove(Vector3 relativePos)
-    {
-        if (!IsServer) return;
-
-        Position.Value = relativePos;
-    }
-
-    public void RelativeRotate(Quaternion relativeRot)
-    {
-        if (!IsServer) return;
-
-        Rotation.Value = relativeRot;
+        Pose curPose = new Pose(Position.Value, cur);
+        var worldPose = CloudAnchorMgr.Singleton.GetWorldPose(curPose);
+        transform.rotation = worldPose.rotation;
     }
 
     public void RelativePose(Pose pose)
     {
         if (!IsServer) return;
 
-        Pose.Value = pose;
+        Position.Value = pose.position;
+        Rotation.Value = pose.rotation;
     }
 }

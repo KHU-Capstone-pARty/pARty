@@ -20,7 +20,7 @@ public class MonsterCtrl : MonoBehaviour
         syncObject = GetComponent<ARSyncObject>();
         attackTargetTransform = CloudAnchorMgr.Singleton.cloudAnchor.transform;
         animator = GetComponent<Animator>();
-        CloudAnchorMgr.Singleton.DebugLog($"Target Pos: {attackTargetTransform.position}");
+        CloudAnchorMgr.Singleton.DebugLog($"(상대위치) y값: {syncObject.Position.Value.y}");
     }
 
     private void Update()
