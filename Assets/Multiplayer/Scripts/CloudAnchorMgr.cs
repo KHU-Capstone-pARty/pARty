@@ -6,7 +6,7 @@ using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 using Google.XR.ARCoreExtensions;
 using Unity.Netcode;
-using UnityEngine.EventSystems; 
+using UnityEngine.EventSystems;
 
 public enum AnchorHostingPhase
 {
@@ -20,7 +20,7 @@ public enum AnchorResolvingPhase
 
 public enum ARSyncObjectID
 {
-    testObj = 0, testMonster = 1,
+    testObj = 0, groundMonster = 1, fairyMonster = 2
 }
 
 public class CloudAnchorMgr : NetworkBehaviour
@@ -66,8 +66,8 @@ public class CloudAnchorMgr : NetworkBehaviour
         playerRef = GameObject.FindWithTag("Ref").GetComponent<PlayerPrefabRef>();
         playerRef.hostAnchorButton.onClick.AddListener(HostAnchor);
         playerRef.resolveAnchorButton.onClick.AddListener(ResolveAnchor);
-        playerRef.placeTestObjToggle.onValueChanged.AddListener((b)=>{isPlacingTestObj = !isPlacingTestObj;});
-        playerRef.placeMonster.onValueChanged.AddListener((b)=>{isPlacingMonster = !isPlacingMonster;});
+        playerRef.placeTestObjToggle.onValueChanged.AddListener((b) => { isPlacingTestObj = !isPlacingTestObj; });
+        playerRef.placeMonster.onValueChanged.AddListener((b) => { isPlacingMonster = !isPlacingMonster; });
     }
 
     // Update is called once per frame
@@ -79,12 +79,12 @@ public class CloudAnchorMgr : NetworkBehaviour
 
     private void InputProcess()
     {
-        if(Input.touchCount < 1) return;
+        if (Input.touchCount < 1) return;
 
         Touch touch = Input.GetTouch(0);
 
         if (touch.phase != TouchPhase.Began) return;
-        
+
         if (EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId)) return;
 
         if (anchorToHost != null && !isPlacingTestObj && !isPlacingMonster)
@@ -94,29 +94,19 @@ public class CloudAnchorMgr : NetworkBehaviour
         }
         else if (isPlacingMonster)
         {
-
-            // Depth로 생성
-
-            // DebugLog("Placing Monster");
-            // var pos = playerRef.spawnLocManager.getSpawnPose();
-            // var spawnPose = new Pose(pos, Quaternion.identity);
-            // DebugLog($"Spawn Pos from depth {spawnPose}");
-            // var relPose = GetRelativePose(spawnPose);
-            // SpawnARSyncObject(((int)ARSyncObjectID.testMonster), relPose.position, relPose.rotation);
-
             // 터치로 생성
-            if (playerRef.raycastManager.Raycast(touch.position,hits,TrackableType.PlaneWithinPolygon))
+            if (playerRef.raycastManager.Raycast(touch.position, hits, TrackableType.PlaneWithinPolygon))
             {
                 var hitPose = hits[0].pose;
                 var relPose = GetRelativePose(hitPose);
-                SpawnARSyncObject(((int)ARSyncObjectID.testMonster), relPose.position, relPose.rotation);
+                SpawnARSyncObject(((int)ARSyncObjectID.groundMonster), relPose.position, relPose.rotation);
             }
 
             return;
         }
         else if (isPlacingTestObj)
         {
-            if (playerRef.raycastManager.Raycast(touch.position,hits,TrackableType.PlaneWithinPolygon))
+            if (playerRef.raycastManager.Raycast(touch.position, hits, TrackableType.PlaneWithinPolygon))
             {
                 var hitPose = hits[0].pose;
                 var relPose = GetRelativePose(hitPose);
@@ -131,12 +121,12 @@ public class CloudAnchorMgr : NetworkBehaviour
         {
             playerRef.text_log.text = $"You cannot create cloud anchor.\n" + playerRef.text_log.text;
             return;
-        }    
+        }
 
-        if (playerRef.raycastManager.Raycast(touch.position,hits,TrackableType.PlaneWithinPolygon))
+        if (playerRef.raycastManager.Raycast(touch.position, hits, TrackableType.PlaneWithinPolygon))
         {
             anchorToHost = playerRef.anchorMgr.AddAnchor(hits[0].pose);
-            cloudAnchorObj = Instantiate(playerRef.anchorPrefab,anchorToHost.transform);
+            cloudAnchorObj = Instantiate(playerRef.anchorPrefab, anchorToHost.transform);
             if (anchorToHost != null)
             {
                 hostPhase = AnchorHostingPhase.readyToHost;
@@ -155,7 +145,7 @@ public class CloudAnchorMgr : NetworkBehaviour
         if (cloudAnchor != null)
             anchorPos = cloudAnchor.transform.position;
         playerRef.text_State.text = $"Anchor: {anchorPos}, Map Quality: {quality.ToString()}, Host: {hostPhase.ToString()}, Resolve: {resolvePhase.ToString()}, Cloud Anchor State: {cloudAnchor?.cloudAnchorState.ToString()}";
-        
+
         if (anchorToHost == null)
         {
             hostPhase = AnchorHostingPhase.nothingToHost;
@@ -178,12 +168,12 @@ public class CloudAnchorMgr : NetworkBehaviour
     [ClientRpc]
     public void SendAnchorIDClientRPC(string id)
     {
-        if(NetworkManager.Singleton.IsServer)
+        if (NetworkManager.Singleton.IsServer)
         {
             playerRef.text_log.text = $"Ignore received Anchor ID: {idToResolve}\n" + playerRef.text_log.text;
             return;
         }
-        
+
         idToResolve = id;
         playerRef.text_log.text = $"Receive Anchor ID: {idToResolve}\n" + playerRef.text_log.text;
     }
@@ -270,7 +260,7 @@ public class CloudAnchorMgr : NetworkBehaviour
             resolvePhase = AnchorResolvingPhase.success;
             var pos = cloudAnchor.pose.position;
             if (cloudAnchorObj != null) Destroy(cloudAnchorObj);
-            cloudAnchorObj = Instantiate(playerRef.anchorPrefab,cloudAnchor.transform);
+            cloudAnchorObj = Instantiate(playerRef.anchorPrefab, cloudAnchor.transform);
             playerRef.text_log.text = $"Successfully Resolved. Cloud anchor position: {pos}\n" + playerRef.text_log.text;
             isNexusExists = true;
             UIMgr.Singleton.planeToggle.Toggle();
@@ -318,7 +308,7 @@ public class CloudAnchorMgr : NetworkBehaviour
         if (!NetworkManager.IsServer) return;
         Pose relPose = new Pose(relPos, relRot);
         Pose worldPose = GetWorldPose(relPose);
-        var instance = Instantiate(playerRef.ARSyncPrefab[objNum], worldPose.position,worldPose.rotation,cloudAnchor.transform);
+        var instance = Instantiate(playerRef.ARSyncPrefab[objNum], worldPose.position, worldPose.rotation, cloudAnchor.transform);
         playerRef.text_log.text = $"Test obj created. Owner: {ownerId}, Relative: {relPose.ToString()}, World: {worldPose.ToString()}\n" + playerRef.text_log.text;
         NetworkObject netObj = instance.GetComponent<NetworkObject>();
         if (netObj == null)
@@ -329,13 +319,13 @@ public class CloudAnchorMgr : NetworkBehaviour
         netObj.Spawn();
     }
 
-    [ServerRpc(RequireOwnership=false)]
+    [ServerRpc(RequireOwnership = false)]
     private void SpawnObjServerRpc(int objNum, Vector3 relPos, Quaternion relRot, ulong ownerId)
     {
         DebugLog("Receive SpawnObjServerRPC");
         Pose relPose = new Pose(relPos, relRot);
         Pose worldPose = GetWorldPose(relPose);
-        var instance = Instantiate(playerRef.ARSyncPrefab[objNum], worldPose.position,worldPose.rotation,cloudAnchor.transform);
+        var instance = Instantiate(playerRef.ARSyncPrefab[objNum], worldPose.position, worldPose.rotation, cloudAnchor.transform);
         playerRef.text_log.text = $"Test obj created. Owner: {ownerId}, Relative: {relPose.ToString()}, World: {worldPose.ToString()}\n" + playerRef.text_log.text;
         NetworkObject netObj = instance.GetComponent<NetworkObject>();
         if (netObj == null)
@@ -370,5 +360,26 @@ public class CloudAnchorMgr : NetworkBehaviour
         debugTextActive = !debugTextActive;
         playerRef.text_log.gameObject.SetActive(debugTextActive);
         playerRef.text_State.gameObject.SetActive(debugTextActive);
+    }
+
+    public void SpawnMonsterByDepth(ARSyncObjectID monsterId)
+    {
+        DebugLog("Try Spawn Monster By Depth");
+        var pos = playerRef.spawnLocManager.getSpawnPose();
+        var spawnPose = new Pose(pos, Quaternion.identity);
+        DebugLog($"Spawn Pos from depth {spawnPose}");
+        var relPose = GetRelativePose(spawnPose);
+        SpawnARSyncObject(((int)monsterId), relPose.position, relPose.rotation);
+    }
+
+    public void SpawnMonsterOppositeSide(ARSyncObjectID monsterId)
+    {
+        DebugLog("Try Spawn Monster Opposite side");
+        Vector3 eulerAngle = new Vector3(Camera.main.transform.eulerAngles.x, Camera.main.transform.eulerAngles.y + 180, Camera.main.transform.eulerAngles.z);
+        var pos = Quaternion.Euler(eulerAngle) * (new Vector3(Random.Range(2, 4), Random.Range(-2, 0), 16.0f) - Camera.main.transform.position);
+        var spawnPose = new Pose(pos, Quaternion.identity);
+        DebugLog($"Spawn Pos from opposite side {spawnPose}");
+        var relPose = GetRelativePose(spawnPose);
+        SpawnARSyncObject(((int)monsterId), relPose.position, relPose.rotation);
     }
 }

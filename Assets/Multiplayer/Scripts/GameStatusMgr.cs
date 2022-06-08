@@ -36,6 +36,10 @@ public class GameStatusMgr : NetworkBehaviour
        NetworkVariableWritePermission.Server);
 
     private PlayerPrefabRef playerRef;
+    private float groundMonsterSpawnDelay = 4f;
+    private float groundMonsterSpawnTimer = 0f;
+    private float fairyMonsterSpawnDelay = 6f;
+    private float fairyMonsterSpawnTimer = 0f;
 
 
     private void Awake()
@@ -63,6 +67,7 @@ public class GameStatusMgr : NetworkBehaviour
     void Update()
     {
         CheckGameStatus();
+        CheckSpawnTimer();
     }
 
     private void OnEnable()
@@ -75,13 +80,32 @@ public class GameStatusMgr : NetworkBehaviour
         currHP.OnValueChanged -= OnHPChanged;
     }
 
+    private void CheckSpawnTimer()
+    {
+        groundMonsterSpawnTimer += Time.deltaTime;
+        fairyMonsterSpawnTimer += Time.deltaTime;
+
+        if (groundMonsterSpawnTimer > groundMonsterSpawnDelay)
+        {
+            groundMonsterSpawnTimer = 0f;
+            CloudAnchorMgr.Singleton.SpawnMonsterByDepth(ARSyncObjectID.groundMonster);
+        }
+
+        if (fairyMonsterSpawnTimer > fairyMonsterSpawnDelay)
+        {
+            fairyMonsterSpawnTimer = 0f;
+            CloudAnchorMgr.Singleton.SpawnMonsterOppositeSide(ARSyncObjectID.groundMonster);
+        }
+    }
+
     public void InitGameStatus()
     {
+        UIMgr.Singleton.selectHostClientPanel.SetActive(false);
+        UIMgr.Singleton.anchorPanel.SetActive(true);
+        
         if (!CloudAnchorMgr.Singleton.NetworkManager.IsServer) return;
 
         CloudAnchorMgr.Singleton.DebugLog("Gamestatus manager spawned");
-        UIMgr.Singleton.selectHostClientPanel.SetActive(false);
-        UIMgr.Singleton.anchorPanel.SetActive(true);
 
         MonsterKillCount.Value = 0;
         FieldMonsterCount.Value = 0;
