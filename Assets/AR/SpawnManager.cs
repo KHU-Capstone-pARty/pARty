@@ -93,15 +93,16 @@ public class SpawnManager : MonoBehaviour
                             MobXSpawnTime = runTime + MobXCycle;
                         }
                     }
-                    if(MobYExist == false)
+                }
+                if (MobYExist == false)
+                {
+                    if (runTime > MobYSpawnTime)
                     {
-                        if(runTime > MobYSpawnTime)
-                        {
-                            SpawnMobY(spawnPose);
-                            spawnPose.y += 0.5f;
-                            SpawnController.GetComponent<SpawnManager>().FieldMobCnt++;
-                            MobYSpawnTime = runTime + MobYCycle;
-                        }
+                        Vector3 eulerAngle = new Vector3(ARCam.transform.eulerAngles.x, ARCam.transform.eulerAngles.y+180, ARCam.transform.eulerAngles.z);    // 플레이어가 바라보는 방향의 반대
+                        spawnPose = Quaternion.Euler(eulerAngle) * (new Vector3(Random.Range(2,4), Random.Range(-2,0), 16.0f) - ARCam.transform.position);
+                        SpawnMobY(spawnPose);
+                        SpawnController.GetComponent<SpawnManager>().FieldMobCnt++;
+                        MobYSpawnTime = runTime + MobYCycle;
                     }
                 }
             }
