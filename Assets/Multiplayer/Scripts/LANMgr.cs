@@ -19,8 +19,8 @@ public class LANMgr : MonoBehaviour
 
     public void StartGame()
     {
-        var obj = Instantiate(cloudAnchorMgrPrefab,Vector3.zero,Quaternion.identity);
-        obj.GetComponent<NetworkObject>().Spawn();
+        var cloudAnchorMgrObj = Instantiate(cloudAnchorMgrPrefab,Vector3.zero,Quaternion.identity);
+        cloudAnchorMgrObj.GetComponent<NetworkObject>().Spawn();
     }
 
     public void StartHost()

@@ -17,4 +17,5 @@ public class PlayerPrefabRef : MonoBehaviour
     public Button resolveAnchorButton;
     public Toggle placeTestObjToggle;
     public Toggle placeMonster;
+    public SpawnLocManager spawnLocManager;
 }

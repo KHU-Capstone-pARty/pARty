@@ -1,19 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
 public enum MonsterState
 {
     idle = 0, walk = 1, attack = 2
 }
 
-public class MonsterCtrl : MonoBehaviour
+public class MonsterCtrl : NetworkBehaviour
 {
     private ARSyncObject syncObject;
     private Transform attackTargetTransform;
     private float moveSpeed = 5f;
     private Animator animator;
     private MonsterState state;
+    private int maxHP = 3;
+    public NetworkVariable<int> HP = new NetworkVariable<int>(
+        default,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server);
 
     private void Start()
     {
@@ -26,6 +32,18 @@ public class MonsterCtrl : MonoBehaviour
     private void Update()
     {
         FollowTargetOnXZPlane();
+    }
+
+    private void OnEnable()
+    {
+        //Position.OnValueChanged += OnPositionChanged;
+        //Rotation.OnValueChanged += OnRotationChanged;
+    }
+
+    private void OnDisable() 
+    {
+        //Position.OnValueChanged -= OnPositionChanged;
+        //Rotation.OnValueChanged -= OnRotationChanged;
     }
 
     private void FollowTargetOnXZPlane()
@@ -60,4 +78,28 @@ public class MonsterCtrl : MonoBehaviour
     {
         animator.SetInteger("state",((int)s));
     }
+
+    public void GetDamage(int d)
+    {
+        if (!CloudAnchorMgr.Singleton.NetworkManager.IsServer) return;
+
+        HP.Value -= d;
+    }
+
+    private void OnHPChanged(int pre, int cur)
+    {
+        if (cur < 0)
+        {
+            // game status manager에서 잡은 수 증가, 골드 추가
+            Destroy(this.gameObject);
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision) 
+    {
+        if (collision.collider.gameObject.CompareTag("Ball"))
+        {
+            Destroy(this.gameObject);
+        }
+    } 
 }

@@ -43,6 +43,8 @@ public class CloudAnchorMgr : NetworkBehaviour
     private bool isPlacingMonster = false;
     private PlayerPrefabRef playerRef;
     private bool debugTextActive = true;
+    [HideInInspector]
+    public bool isNexusExists = false;
 
     private void Awake()
     {
@@ -92,12 +94,16 @@ public class CloudAnchorMgr : NetworkBehaviour
         }
         else if (isPlacingMonster)
         {
-            if (playerRef.raycastManager.Raycast(touch.position,hits,TrackableType.PlaneWithinPolygon))
-            {
-                var hitPose = hits[0].pose;
-                var relPose = GetRelativePose(hitPose);
-                SpawnARSyncObject(((int)ARSyncObjectID.testMonster), relPose.position, relPose.rotation);
-            }
+            var pos = playerRef.spawnLocManager.getSpawnPose();
+            var spawnPose = new Pose(pos, Quaternion.identity);
+            var relPose = GetRelativePose(spawnPose);
+            SpawnARSyncObject(((int)ARSyncObjectID.testMonster), relPose.position, relPose.rotation);
+            // if (playerRef.raycastManager.Raycast(touch.position,hits,TrackableType.PlaneWithinPolygon))
+            // {
+            //     var hitPose = hits[0].pose;
+            //     var relPose = GetRelativePose(hitPose);
+            //     SpawnARSyncObject(((int)ARSyncObjectID.testMonster), relPose.position, relPose.rotation);
+            // }
 
             return;
         }
@@ -259,6 +265,7 @@ public class CloudAnchorMgr : NetworkBehaviour
             if (cloudAnchorObj != null) Destroy(cloudAnchorObj);
             cloudAnchorObj = Instantiate(playerRef.anchorPrefab,cloudAnchor.transform);
             playerRef.text_log.text = $"Successfully Resolved. Cloud anchor position: {pos}\n" + playerRef.text_log.text;
+            isNexusExists = true;
         }
         else if (state != CloudAnchorState.TaskInProgress)
         {
