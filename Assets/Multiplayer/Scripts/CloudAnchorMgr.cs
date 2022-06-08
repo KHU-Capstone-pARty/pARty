@@ -37,7 +37,8 @@ public class CloudAnchorMgr : NetworkBehaviour
     public AnchorResolvingPhase resolvePhase;
     private string idToResolve;
     private bool isStartEstimate = false;
-    private GameObject cloudAnchorObj;
+    [HideInInspector]
+    public GameObject cloudAnchorObj;
     private bool isPlacingTestObj = false;
     private bool isPlacingMonster = false;
     private PlayerPrefabRef playerRef;

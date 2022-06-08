@@ -10,7 +10,7 @@ public enum MonsterState
 public class MonsterCtrl : MonoBehaviour
 {
     private ARSyncObject syncObject;
-    private Transform attckTargetTransform;
+    private Transform attackTargetTransform;
     private float moveSpeed = 5f;
     private Animator animator;
     private MonsterState state;
@@ -18,8 +18,9 @@ public class MonsterCtrl : MonoBehaviour
     private void Start()
     {
         syncObject = GetComponent<ARSyncObject>();
-        attckTargetTransform = CloudAnchorMgr.Singleton.cloudAnchor.transform;
+        attackTargetTransform = CloudAnchorMgr.Singleton.cloudAnchor.transform;
         animator = GetComponent<Animator>();
+        CloudAnchorMgr.Singleton.DebugLog($"Target Pos: {attackTargetTransform.position}");
     }
 
     private void Update()
@@ -29,8 +30,7 @@ public class MonsterCtrl : MonoBehaviour
 
     private void FollowTargetOnXZPlane()
     {
-        Vector3 dir = attckTargetTransform.position - transform.position;
-        dir = new Vector3(dir.x,0,dir.z);
+        Vector3 dir = attackTargetTransform.position - transform.position;
         float distance = dir.magnitude;
 
         SetState(MonsterState.walk);
@@ -45,13 +45,15 @@ public class MonsterCtrl : MonoBehaviour
         if (!CloudAnchorMgr.Singleton.NetworkManager.IsServer) return;
 
         var targetPosition = transform.position + dir * moveSpeed;
-        transform.LookAt(targetPosition);
+        // 클라우드 앵커의 윗방향으로 transform 윗방향 설정
+        Quaternion rot = Quaternion.LookRotation(dir.normalized,CloudAnchorMgr.Singleton.cloudAnchorObj.transform.up);
 
-        Pose worldPose = new Pose(targetPosition, transform.rotation);
+        Pose worldPose = new Pose(targetPosition, rot);
         var relativePose = CloudAnchorMgr.Singleton.GetRelativePose(worldPose);
 
-        syncObject.RelativeMove(relativePose.position);
-        syncObject.RelativeRotate(relativePose.rotation);
+        // syncObject.RelativeMove(relativePose.position);
+        // syncObject.RelativeRotate(relativePose.rotation);
+        syncObject.RelativePose(relativePose);
     }
 
     private void SetState(MonsterState s)

@@ -15,6 +15,12 @@ public class ARSyncObject : NetworkBehaviour
         default,
         NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Server);
+
+    public NetworkVariable<Pose> Pose = new NetworkVariable<Pose>(
+        default,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server);
+
     private NetworkObject netObj;
     void Start()
     {
@@ -28,14 +34,16 @@ public class ARSyncObject : NetworkBehaviour
 
     private void OnEnable()
     {
-        Position.OnValueChanged += OnPositionChanged;
-        Rotation.OnValueChanged += OnRotationChanged;
+        // Position.OnValueChanged += OnPositionChanged;
+        // Rotation.OnValueChanged += OnRotationChanged;
+        Pose.OnValueChanged += OnPoseChanged;
     }
 
     private void OnDisable() 
     {
-        Position.OnValueChanged -= OnPositionChanged;
-        Rotation.OnValueChanged -= OnRotationChanged;
+        // Position.OnValueChanged -= OnPositionChanged;
+        // Rotation.OnValueChanged -= OnRotationChanged;
+        Pose.OnValueChanged -= OnPoseChanged;
     }
 
     public void Init()
@@ -66,13 +74,12 @@ public class ARSyncObject : NetworkBehaviour
         pose = CloudAnchorMgr.Singleton.GetWorldPose(pose);
         transform.rotation = pose.rotation;
     }
-
-    public void TestMoveFunction()
+    
+    private void OnPoseChanged(Pose pre, Pose cur)
     {
-        //CloudAnchorMgr.Singleton.DebugLog($"TestMoveFunction. IsOwner: {IsOwner}");
-        if (!IsServer) return;
-
-        Position.Value += new Vector3(0f,0f,0.01f);
+        var worldPose = CloudAnchorMgr.Singleton.GetWorldPose(cur);
+        transform.position = worldPose.position;
+        transform.rotation =worldPose.rotation;
     }
 
     public void RelativeMove(Vector3 relativePos)
@@ -87,5 +94,12 @@ public class ARSyncObject : NetworkBehaviour
         if (!IsServer) return;
 
         Rotation.Value = relativeRot;
+    }
+
+    public void RelativePose(Pose pose)
+    {
+        if (!IsServer) return;
+
+        Pose.Value = pose;
     }
 }
