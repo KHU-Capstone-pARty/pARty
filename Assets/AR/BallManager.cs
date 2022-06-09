@@ -10,14 +10,20 @@ public class BallManager : MonoBehaviour
 	public GameObject m_SpawnController;
 
 	// This is the force of the throw
-	public float m_ThrowForce = 100f;
+	// public float m_ThrowForce = 100f;
+
+	// // X and Y axis damping factors for the throw direction
+	// public float m_ThrowDirectionX = 0.17f;
+	// public float m_ThrowDirectionY = 0.67f;
+
+	public float m_ThrowForce = 10f;
 
 	// X and Y axis damping factors for the throw direction
-	public float m_ThrowDirectionX = 0.17f;
-	public float m_ThrowDirectionY = 0.67f;
+	public float m_ThrowDirectionX = 0.017f;
+	public float m_ThrowDirectionY = 0.067f;
 
 	// Offset of the ball's position in relation to camera's position
-	public Vector3 m_BallCameraOffset = new Vector3(0f, -1.4f, 3f);
+	private Vector3 m_BallCameraOffset = new Vector3(0f, -0.4f, 1f);
 
 	// The following variables contain the state of the current throw
 	private Vector3 startPosition;

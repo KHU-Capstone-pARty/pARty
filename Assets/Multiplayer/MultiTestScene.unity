@@ -5022,10 +5022,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SpawnController: {fileID: 1402395794}
-  m_ThrowForce: 100
-  m_ThrowDirectionX: 0.17
-  m_ThrowDirectionY: 0.67
-  m_BallCameraOffset: {x: 0, y: -1.4, z: 3}
+  m_ThrowForce: 20
+  m_ThrowDirectionX: 0.017
+  m_ThrowDirectionY: 0.067
   ARCam: {fileID: 1513273837}
   m_SessionOrigin: {fileID: 155461125}
 --- !u!54 &2117071247
@@ -5114,8 +5113,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2117071245}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -2, z: 5}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: -0.15, z: 0.33}
+  m_LocalScale: {x: 0.15, y: 0.15, z: 0.15}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 10

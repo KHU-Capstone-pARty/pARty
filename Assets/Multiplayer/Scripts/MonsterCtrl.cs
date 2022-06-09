@@ -5,7 +5,7 @@ using Unity.Netcode;
 
 public enum MonsterState
 {
-    idle = 0, walk = 1, attack = 2
+    idle = 0, walk = 1, attack = 2, death = 3
 }
 
 public class MonsterCtrl : NetworkBehaviour
@@ -30,6 +30,9 @@ public class MonsterCtrl : NetworkBehaviour
         animator = GetComponent<Animator>();
         CloudAnchorMgr.Singleton.DebugLog($"(상대위치) y값: {syncObject.Position.Value.y}");
         GameStatusMgr.Singleton.MonsterSpawnAlert();
+        if (!CloudAnchorMgr.Singleton.NetworkManager.IsServer) return;
+
+        HP.Value = maxHP;
     }
 
     private void Update()
@@ -39,18 +42,18 @@ public class MonsterCtrl : NetworkBehaviour
 
     private void OnEnable()
     {
-        //Position.OnValueChanged += OnPositionChanged;
-        //Rotation.OnValueChanged += OnRotationChanged;
+        HP.OnValueChanged += OnHPChanged;
     }
 
     private void OnDisable() 
     {
-        //Position.OnValueChanged -= OnPositionChanged;
-        //Rotation.OnValueChanged -= OnRotationChanged;
+        HP.OnValueChanged -= OnHPChanged;
     }
 
     private void FollowTargetOnXZPlane()
     {
+        if (HP.Value <= 0) return;
+
         Vector3 dir = attackTargetTransform.position - transform.position;
         float distance = dir.magnitude;
 
@@ -92,12 +95,22 @@ public class MonsterCtrl : NetworkBehaviour
         HP.Value -= d;
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    public void GetDamageServerRpc(int d)
+    {
+        if (!CloudAnchorMgr.Singleton.NetworkManager.IsServer) return;
+
+        HP.Value -= d;
+    }
+
     private void OnHPChanged(int pre, int cur)
     {
         if (cur <= 0)
         {
             GameStatusMgr.Singleton.MonsterDieAlert();
-            Destroy(this.gameObject);
+            CloudAnchorMgr.Singleton.DebugLog("죽음죽음죽음죽음죽음죽음");
+            SetState(MonsterState.death);
+            Destroy(this.gameObject,2.5f);
         }
     }
 
@@ -105,8 +118,13 @@ public class MonsterCtrl : NetworkBehaviour
     {
         if (collision.collider.gameObject.CompareTag("Ball"))
         {
-            CloudAnchorMgr.Singleton.DebugLog("충돌충돌충돌충돌충돌충돌");
-            GetDamage(maxHP);
+            Debug.Log("충돌");
+            CloudAnchorMgr.Singleton.DebugLog("충돌충돌충돌충돌충돌충돌충돌");
+
+            if (CloudAnchorMgr.Singleton.NetworkManager.IsServer)
+                GetDamage(maxHP);
+            else
+                GetDamageServerRpc(maxHP);
         }
     } 
 }
