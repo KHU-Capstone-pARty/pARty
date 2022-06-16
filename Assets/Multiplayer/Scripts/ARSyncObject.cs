@@ -80,4 +80,10 @@ public class ARSyncObject : NetworkBehaviour
         Position.Value = pose.position;
         Rotation.Value = pose.rotation;
     }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void RelativePoseServerRpc(Vector3 pos, Quaternion rot)
+    {
+        RelativePose(new Pose(pos,rot));
+    }
 }

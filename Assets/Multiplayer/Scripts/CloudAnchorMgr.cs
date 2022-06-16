@@ -20,7 +20,7 @@ public enum AnchorResolvingPhase
 
 public enum ARSyncObjectID
 {
-    testObj = 0, groundMonster = 1, fairyMonster = 2
+    testObj = 0, groundMonster = 1, fairyMonster = 2, playerAvatar = 3,
 }
 
 public class CloudAnchorMgr : NetworkBehaviour
@@ -265,6 +265,10 @@ public class CloudAnchorMgr : NetworkBehaviour
             isNexusExists = true;
             UIMgr.Singleton.planeToggle.Toggle();
             UIMgr.Singleton.heartGroup.SetActive(true);
+
+            Pose worldCameraPose = new Pose(Camera.main.transform.position, Camera.main.transform.rotation);
+            Pose relativeCameraPose = GetRelativePose(worldCameraPose);
+            SpawnARSyncObject(((int)ARSyncObjectID.playerAvatar),relativeCameraPose.position,relativeCameraPose.rotation);
         }
         else if (state != CloudAnchorState.TaskInProgress)
         {
@@ -317,7 +321,7 @@ public class CloudAnchorMgr : NetworkBehaviour
             DebugLog($"NetObj is null");
             return;
         }
-        netObj.Spawn();
+        netObj.SpawnWithOwnership(ownerId);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -334,7 +338,7 @@ public class CloudAnchorMgr : NetworkBehaviour
             DebugLog($"NetObj is null");
             return;
         }
-        netObj.Spawn();
+        netObj.SpawnWithOwnership(ownerId);
     }
 
     public void DebugLog(string msg)
