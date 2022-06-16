@@ -5023,7 +5023,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SpawnController: {fileID: 1402395794}
   m_ThrowForce: 20
-  m_ThrowDirectionX: 0.017
+  m_ThrowDirectionX: 0.055
   m_ThrowDirectionY: 0.067
   ARCam: {fileID: 1513273837}
   m_SessionOrigin: {fileID: 155461125}

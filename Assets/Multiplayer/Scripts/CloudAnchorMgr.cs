@@ -264,6 +264,7 @@ public class CloudAnchorMgr : NetworkBehaviour
             playerRef.text_log.text = $"Successfully Resolved. Cloud anchor position: {pos}\n" + playerRef.text_log.text;
             isNexusExists = true;
             UIMgr.Singleton.planeToggle.Toggle();
+            UIMgr.Singleton.heartGroup.SetActive(true);
         }
         else if (state != CloudAnchorState.TaskInProgress)
         {

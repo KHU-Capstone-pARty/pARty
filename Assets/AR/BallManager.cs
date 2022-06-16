@@ -19,7 +19,7 @@ public class BallManager : MonoBehaviour
 	public float m_ThrowForce = 10f;
 
 	// X and Y axis damping factors for the throw direction
-	public float m_ThrowDirectionX = 0.017f;
+	public float m_ThrowDirectionX = 0.055f;
 	public float m_ThrowDirectionY = 0.067f;
 
 	// Offset of the ball's position in relation to camera's position
@@ -41,6 +41,8 @@ public class BallManager : MonoBehaviour
 	ARSessionOrigin m_SessionOrigin;
 
 	Rigidbody rb;
+	bool isGameStart = false;
+	bool isGravity = false;
 
 	private void Start(){
 		rb = gameObject.GetComponent<Rigidbody>();
@@ -52,6 +54,15 @@ public class BallManager : MonoBehaviour
 	}
 
 	private void Update(){
+		if (!CloudAnchorMgr.Singleton.isNexusExists)
+		{
+			return;
+		}
+		else if (!isGameStart)
+		{
+			ResetBall();	
+			isGameStart = true;
+		}
 
 		// We've started the touch of the screen, which will start collecting info about the ball throw
 		if(Input.GetMouseButtonDown(0)){ // Works for both Mouse and Touch on Mobile, when we press/touch
@@ -72,7 +83,8 @@ public class BallManager : MonoBehaviour
 		if (directionChosen) {
 			rb.isKinematic = false;
 			rb.mass = 1;
-			rb.useGravity = true;
+			//rb.useGravity = true;
+			isGravity = true;
 
 			rb.AddForce(
 				ARCam.transform.forward * m_ThrowForce / duration +
@@ -94,6 +106,15 @@ public class BallManager : MonoBehaviour
 			ResetBall();
 	}
 
+	private void FixedUpdate()
+	{
+		if (isGravity)
+		{
+			var gravity = CloudAnchorMgr.Singleton.cloudAnchorObj.transform.up * -8f;
+			rb.AddForce(gravity);
+		}
+	}
+
 	public void ResetBall()
 	{	            
 		if (!CloudAnchorMgr.Singleton.isNexusExists) return;
@@ -101,6 +122,7 @@ public class BallManager : MonoBehaviour
 		rb.isKinematic = true;
 		rb.mass = 0;
 		rb.useGravity = false;
+		isGravity = false;
 		rb.velocity = Vector3.zero;
 		rb.angularVelocity = Vector3.zero;
 		endTime = 0.0f;
